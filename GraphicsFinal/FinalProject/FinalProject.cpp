@@ -780,7 +780,7 @@ int main(int argc, char** argv) {
   glutInitContextProfile(GLUT_CORE_PROFILE);
 
   // Double buffer with depth buffer and MSAA
-  glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+  glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE | GLUT_STENCIL);
   glutInitWindowPosition(100, 100); 
   glutInitWindowSize(800, 600);
   glutCreateWindow("Final Project by Sam Du, Miles Gapcynski, and Chad Pournaras");

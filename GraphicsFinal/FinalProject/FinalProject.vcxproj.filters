@@ -136,6 +136,9 @@
     <ClInclude Include="..\scene\modelnode.h">
       <Filter>Header Files\scene</Filter>
     </ClInclude>
+    <ClInclude Include="tvnode.h">
+      <Filter>Header Files\scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gl3w.c" />

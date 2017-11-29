@@ -51,6 +51,7 @@
     <ClInclude Include="..\shader_support\glsl_shaderprogram.h" />
     <ClInclude Include="..\shader_support\glsl_vertexshader.h" />
     <ClInclude Include="lighting_shader_node.h" />
+    <ClInclude Include="tvnode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gl3w.c" />
