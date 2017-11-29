@@ -39,6 +39,9 @@ public:
       return false;
     }
 
+    tangent_loc = glGetAttribLocation(shader_program.GetProgram(), "tangent");
+    bitangent_loc = glGetAttribLocation(shader_program.GetProgram(), "bitangent");
+
     pvm_loc = glGetUniformLocation(shader_program.GetProgram(), "pvm");
     if (pvm_loc < 0) {
       std::cout << "Error getting pvm location" << std::endl;
@@ -113,6 +116,10 @@ public:
     // Populate texture locations
     usetexture_loc = glGetUniformLocation(shader_program.GetProgram(), "useTexture");
     textureunit_loc = glGetUniformLocation(shader_program.GetProgram(), "texImage");
+
+    usenormalmap_loc = glGetUniformLocation(shader_program.GetProgram(), "useNormalMap");
+    normalmap_loc = glGetUniformLocation(shader_program.GetProgram(), "normalMap");
+
     return true;
    }
 
@@ -129,6 +136,9 @@ public:
     scene_state.position_loc = position_loc;
     scene_state.normal_loc = vertexnormal_loc;
     scene_state.texture_loc = texture_loc;
+    scene_state.tangent_loc = tangent_loc;
+    scene_state.bitangent_loc = bitangent_loc;
+
     scene_state.pvm_loc = pvm_loc;
     scene_state.modelmatrix_loc = modelmatrix_loc;
     scene_state.normalmatrix_loc = normalmatrix_loc;
@@ -144,6 +154,9 @@ public:
     // Set texture uniform locations
     scene_state.usetexture_loc = usetexture_loc;
     scene_state.textureunit_loc = textureunit_loc;
+
+    scene_state.usenormalmap_loc = usenormalmap_loc;
+    scene_state.normalmap_loc = normalmap_loc;
 
     // Set the light locations
     scene_state.lightcount_loc = lightcount_loc;
@@ -189,11 +202,24 @@ public:
     return texture_loc;
   }
 
+  int getTangentLoc() const
+  {
+      return tangent_loc;
+  }
+
+  int getBitangentLoc() const
+  {
+      return bitangent_loc;
+  }
+
 protected:
   // Uniform and attribute locations:
-  GLint position_loc;	        // Vertex position attribute location
-  GLint vertexnormal_loc;		  // Vertex normal attribute location
-  GLint texture_loc;          // Vertex texture attribute location
+  GLint position_loc;      // Vertex position attribute location
+  GLint vertexnormal_loc;  // Vertex normal attribute location
+  GLint texture_loc;       // Vertex texture attribute location
+  GLint tangent_loc;       // Vertex tangent vector location
+  GLint bitangent_loc;     // Vertex bitangent vector location
+
   GLint pvm_loc;				      // Composite projection, view, model matrix location
   GLint modelmatrix_loc;	    // Modeling composite matrix location
   GLint normalmatrix_loc;		  // Normal transformation matrix location
@@ -209,12 +235,15 @@ protected:
   // Texture uniform locations
   GLint usetexture_loc;       // Texture use flag location
   GLint textureunit_loc;      // Texture unit location
+
+  GLint usenormalmap_loc;      // Normal map use flag location
+  GLint normalmap_loc;         // Normal map unit location
   
   // Lighting uniforms
   int light_count;            // Number of lights
   GLint lightcount_loc;       // Light count uniform locations
   GLint globalambient_loc;    // Global ambient uniform location
-  LightUniforms lights[2];    // Light source uniform locations
+  LightUniforms lights[3];    // Light source uniform locations
 };
 
 #endif

@@ -117,10 +117,16 @@ public:
   * @param   nsides          Number of sides (divisions of the top/bottom)
   * @param   nstacks        Number of height divisions
   */
-  TexturedConicSurface(const float bottom_radius, const float top_radius,
-    const uint32_t nsides, const uint32_t nstacks,
-    const int position_loc, const int normal_loc,
-    const int texture_loc) {
+  TexturedConicSurface(const float bottom_radius, 
+                       const float top_radius, 
+                       const uint32_t nsides, 
+                       const uint32_t nstacks, 
+                       const int position_loc, 
+                       const int normal_loc, 
+                       const int texture_loc, 
+                       const int tangent_loc, 
+                       const int bitangent_loc)
+  {
     // Fail if top and bottom radius are both 0
     if (bottom_radius <= 0.0f && top_radius <= 0.0f)
       return;
@@ -183,7 +189,7 @@ public:
 
     // Construct the face list and create VBOs
     ConstructRowColFaceList(ncols, nrows);
-    CreateVertexBuffers(position_loc, normal_loc, texture_loc);
+    CreateVertexBuffers(position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
   }
 
 private:

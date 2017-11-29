@@ -108,8 +108,14 @@ public:
   * @param  v   Edge/polyline to revolve
   * @param  n   Number of angular subdivisions
   */
-  TexturedSurfaceOfRevolution(std::vector<Point3>& v, uint32_t n, const int position_loc,
-                const int normal_loc, const int texture_loc) {
+  TexturedSurfaceOfRevolution(std::vector<Point3>& v, 
+                              uint32_t n, 
+                              const int position_loc, 
+                              const int normal_loc, 
+                              const int texture_loc, 
+                              const int tangent_loc, 
+                              const int bitangent_loc)
+  {
     // Set number of rows and columns
     nrows = (uint32_t)v.size();
     ncols = n + 1;
@@ -185,7 +191,7 @@ public:
 
     // Construct the face list and create VBOs
     ConstructRowColFaceList(ncols, nrows);
-    CreateVertexBuffers(position_loc, normal_loc, texture_loc);
+    CreateVertexBuffers(position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
   }
 
 private:

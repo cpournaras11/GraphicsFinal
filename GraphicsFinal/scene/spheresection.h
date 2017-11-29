@@ -91,10 +91,19 @@ public:
   * @param   nlng     Number of divisions of longitude
   * @param   radius   Radius of the sphere
   */
-  TexturedSphereSection(const float minlat, const float maxlat, const uint32_t nlat,
-      const float minlng, const float maxlng, const uint32_t nlng,
-      const float radius, const int position_loc, const int normal_loc,
-      const int texture_loc) {
+  TexturedSphereSection(const float minlat, 
+                        const float maxlat, 
+                        const uint32_t nlat, 
+                        const float minlng, 
+                        const float maxlng, 
+                        const uint32_t nlng, 
+                        const float radius, 
+                        const int position_loc, 
+                        const int normal_loc, 
+                        const int texture_loc, 
+                        const int tangent_loc, 
+                        const int bitangent_loc)
+  {
     // Convert to radians
     float minlat_rad = DegreesToRadians(minlat);
     float maxlat_rad = DegreesToRadians(maxlat);
@@ -129,7 +138,7 @@ public:
     // Construct face list and create VBOs.  There are nlat+1 rows and 
     // nlng+1 columns.
     ConstructRowColFaceList(nlng + 1, nlat + 1);
-    CreateVertexBuffers(position_loc, normal_loc, texture_loc);
+    CreateVertexBuffers(position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
   }
 
 private:
