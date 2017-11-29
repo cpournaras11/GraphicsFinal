@@ -321,20 +321,23 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square,
 	// Front wall is rotated -90 degrees about x: (z -> y)
 	TransformNode* frontwall_transform = new TransformNode;
 	frontwall_transform->Translate(0.0f, -100.0f, 40.0f);
-	frontwall_transform->RotateX(-90.0f);
+    frontwall_transform->RotateZ(180.0f);
+	frontwall_transform->RotateX(90.0f);
 	frontwall_transform->Scale(200.0f, 80.0f, 1.0f);
 
 	// Left wall is rotated 90 degrees about y: (z -> x)
 	TransformNode* leftwall_transform = new TransformNode;
 	leftwall_transform->Translate(-100.0f, 0.0f, 40.0f);
-	leftwall_transform->RotateY(90.0f);
-	leftwall_transform->Scale(80.0f, 200.0f, 1.0f);
+    leftwall_transform->RotateZ(90.0f);
+	leftwall_transform->RotateX(90.0f);
+	leftwall_transform->Scale(200.0f, 80.0f, 1.0f);
 
 	// Right wall is rotated -90 about y: (z -> -x)
 	TransformNode* rightwall_transform = new TransformNode;
 	rightwall_transform->Translate(100.0f, 0.0f, 40.0f);
-	rightwall_transform->RotateY(-90.0f);
-	rightwall_transform->Scale(80.0f, 200.0f, 1.0f);
+    rightwall_transform->RotateZ(-90.0f);
+	rightwall_transform->RotateX(90.0f);
+	rightwall_transform->Scale(200.0f, 80.0f, 1.0f);
 
 	// Ceiling is rotated 180 about x so it faces inwards
 	TransformNode* ceiling_transform = new TransformNode;
@@ -344,12 +347,20 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square,
 
 	// Use a texture for the floor
 	PresentationNode* floor_material = new PresentationNode(Color4(0.15f, 0.15f, 0.15f),
-		Color4(0.4f, 0.4f, 0.4f), Color4(0.2f, 0.2f, 0.2f), Color4(0.0f, 0.0f, 0.0f), 5.0f);
+		                                                    Color4(0.4f, 0.4f, 0.4f), 
+                                                            Color4(0.2f, 0.2f, 0.2f), 
+                                                            Color4(0.0f, 0.0f, 0.0f), 
+                                                            5.0f);
 	floor_material->SetTexture("floor_tiles.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
-	// Make the walls reddish, slightly shiny
+	// Use a texture for the walls
 	PresentationNode* wall_material = new PresentationNode(Color4(0.35f, 0.225f, 0.275f),
-		Color4(0.7f, 0.55f, 0.55f), Color4(0.4f, 0.4f, 0.4f), Color4(0.0f, 0.0f, 0.0f), 16.0f);
+		                                                   Color4(0.7f, 0.55f, 0.55f), 
+                                                           Color4(0.4f, 0.4f, 0.4f), 
+                                                           Color4(0.0f, 0.0f, 0.0f), 
+                                                           16.0f);
+    wall_material->SetTexture("masonry-wall-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    wall_material->setNormalMap("masonry-wall-normal-map.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
 	// Ceiling should be white, moderately shiny
 	PresentationNode* ceiling_material = new PresentationNode(Color4(0.75f, 0.75f, 0.75f),
@@ -359,13 +370,13 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square,
 	SceneNode* room = new SceneNode;
 	room->AddChild(wall_material);
 	wall_material->AddChild(backwall_transform);
-	backwall_transform->AddChild(unit_square);
+	backwall_transform->AddChild(textured_square);
 	wall_material->AddChild(leftwall_transform);
-	leftwall_transform->AddChild(unit_square);
+	leftwall_transform->AddChild(textured_square);
 	wall_material->AddChild(rightwall_transform);
-	rightwall_transform->AddChild(unit_square);
+	rightwall_transform->AddChild(textured_square);
 	wall_material->AddChild(frontwall_transform);
-	frontwall_transform->AddChild(unit_square);
+	frontwall_transform->AddChild(textured_square);
 
 	// Add floor and ceiling to the parent. Use convenience method to add
 	// presentation, then transform, then geometry.
@@ -691,9 +702,11 @@ void ConstructScene() {
     exit(-1);
 
   // Get the position, texture, and normal locations to use when constructing VAOs
-  int position_loc = shader->GetPositionLoc();
-  int normal_loc   =  shader->GetNormalLoc();
-  int texture_loc  = shader->GetTextureLoc();
+  int position_loc  = shader->GetPositionLoc();
+  int normal_loc    = shader->GetNormalLoc();
+  int texture_loc   = shader->GetTextureLoc();
+  int tangent_loc   = shader->getTangentLoc();
+  int bitangent_loc = shader->getBitangentLoc();
 
   // Add the camera to the scene
   // Initialize the view and set a perspective projection
@@ -710,8 +723,13 @@ void ConstructScene() {
   UnitSquareSurface* unit_square = new UnitSquareSurface(2, position_loc, normal_loc);
 
   // Construct a textured square for the floor
-  TexturedUnitSquareSurface* textured_square = new TexturedUnitSquareSurface(2, 8, position_loc,
-                 normal_loc, texture_loc);
+  TexturedUnitSquareSurface* textured_square = new TexturedUnitSquareSurface(2, 
+                                                                             2, 
+                                                                             position_loc, 
+                                                                             normal_loc, 
+                                                                             texture_loc, 
+                                                                             tangent_loc, 
+                                                                             bitangent_loc);
 
   // Construct the room as a child of the root node
   SceneNode* room = ConstructRoom(unit_square, textured_square);

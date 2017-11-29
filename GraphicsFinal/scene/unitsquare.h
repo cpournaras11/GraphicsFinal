@@ -59,8 +59,14 @@ public:
   * for the surface.
   * @param  n   Number of subdivisions in x and y
   */
-  TexturedUnitSquareSurface(unsigned int n, float texture_scale, const int position_loc,
-                            const int normal_loc, const int texture_loc) {
+  TexturedUnitSquareSurface(unsigned int n, 
+                            float texture_scale, 
+                            const int position_loc,
+                            const int normal_loc, 
+                            const int texture_loc, 
+                            const int tangent_loc, 
+                            const int bitangent_loc)
+  {
     // Only allow 250 subdivision (so it creates less that 65K vertices)
     if (n > 250)
       n = 250;
@@ -84,7 +90,10 @@ public:
 
     // Construct face list and create vertex buffer objects
     ConstructRowColFaceList(n + 1, n + 1);
-    CreateVertexBuffers(position_loc, normal_loc, texture_loc);
+
+    calcTBNMatrices();
+
+    CreateVertexBuffers(position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
   }
 
 private:

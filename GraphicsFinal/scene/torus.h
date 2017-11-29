@@ -79,9 +79,16 @@ public:
   * @param   nring       Number of divisions around the ring
   * @param   ntube       Number of divisions around the tube
   */
-  TexturedTorusSurface(const float ringradius, const float tuberadius,
-                  const int nring, const int ntube, const int position_loc,
-                  const int normal_loc, const int texture_loc)  {
+  TexturedTorusSurface(const float ringradius, 
+                       const float tuberadius, 
+                       const int nring, 
+                       const int ntube, 
+                       const int position_loc, 
+                       const int normal_loc, 
+                       const int texture_loc, 
+                       const int tangent_loc, 
+                       const int bitangent_loc)
+  {
     // Use <= so we wrap around to make the last vertices meet the first
     int i, j;
     float v, phi, theta;
@@ -110,7 +117,7 @@ public:
 
     // Construct face list.  There are ntube+1 rows and nring+1 columns. Create VBOs
     ConstructRowColFaceList(ntube + 1, nring + 1);
-    CreateVertexBuffers(position_loc, normal_loc, texture_loc);
+    CreateVertexBuffers(position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
   }
 
 private:

@@ -112,6 +112,8 @@ struct PNTVertex {
   Point3  vertex;
   Vector3 normal;
   float   s, t;
+  Vector3 tangent;
+  Vector3 bitangent;
 
   PNTVertex() :
     vertex({ 0.0f, 0.0f, 0.0f }),

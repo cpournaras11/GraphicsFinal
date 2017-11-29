@@ -38,10 +38,12 @@ struct LightUniforms {
  */
 struct SceneState {
   // Vertex attribute locations
-  GLint position_loc;       // Vertex position attribute location
-  GLint vertexcolor_loc;    // Vertex color attribute location
-  GLint normal_loc;         // Vertex normal attribute location
-  GLint texture_loc;        // Texture vertex attribute location
+  GLint position_loc;      // Vertex position attribute location
+  GLint vertexcolor_loc;   // Vertex color attribute location
+  GLint normal_loc;        // Vertex normal attribute location
+  GLint texture_loc;       // Texture vertex attribute location
+  GLint tangent_loc;       // Vertex tangent vector location
+  GLint bitangent_loc;     // Vertex bitangent vector location
 
   // Uniform locations
   GLint orthomatrix_loc;    // Orthographic projection location (2-D)
@@ -61,6 +63,9 @@ struct SceneState {
   // Texture mapping
   GLint usetexture_loc;
   GLint textureunit_loc;
+
+  GLint usenormalmap_loc;  // Normal map flag location
+  GLint normalmap_loc;
 
   // Lights
   int    max_enabled_light;    // Index of the maximum enabled light index

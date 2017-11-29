@@ -4,11 +4,14 @@
 smooth out vec3 normal;
 smooth out vec3 vertex;
 smooth out vec2 texture;
+out mat3 tbn;
 
 // Incoming vertex and normal attributes
-in vec3 vertexPosition;		// Vertex position attribute
-in vec3 vertexNormal;		  // Vertex normal attribute
+in vec3 vertexPosition;   // Vertex position attribute
+in vec3 vertexNormal;     // Vertex normal attribute
 in vec2 texturePosition;  // Texture coordinate
+in vec3 tangent;          // Vertex tangent vector
+in vec3 bitangent;        // Vertex bitangent vector
 
 // Uniforms for matrices
 uniform mat4 pvm;					  // Composite projection, view, model matrix
@@ -21,7 +24,14 @@ uniform mat4 normalMatrix;	// Normal transformation matrix
 // the fragment shader can interpolate world coordinates.
 void main()
 {
-  // Output interpolated texture position
+    // Create matrix that converts tangent coords to world coords
+    vec3 t = normalize(vec3(normalMatrix * vec4(tangent, 0.0)));
+    vec3 b = normalize(vec3(normalMatrix * vec4(bitangent, 0.0)));
+    vec3 n = normalize(vec3(normalMatrix * vec4(vertexNormal, 0.0)));
+
+    tbn = mat3(t, b, n);
+
+    // Output interpolated texture position
 	texture = texturePosition;
 
 	// Transform normal and position to world coords. 

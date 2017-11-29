@@ -28,6 +28,7 @@ public:
     reference_count = 0;
     material_shininess = 1.0f;
     texture_id = 0;             // Default to no texture
+    normalMapID = 0;               // Default to no normal map
 
     // Note: color constructors default rgb to 0 and alpha to 1
   }
@@ -47,7 +48,8 @@ public:
       material_specular(ms),
       material_emission(me),
       material_shininess(s),
-      texture_id(0) {
+      texture_id(0),
+      normalMapID(0) {
     node_type = SCENE_PRESENTATION;
     reference_count = 0;
   }
@@ -177,6 +179,79 @@ public:
   }
 
   /**
+  * Set the normal map to use for the material.
+  * @param  fname  Texture image filename
+  * @param  wrap_s  OpenGL wrap option (s)
+  * @param  wrap_t  OpenGL wrap option (t)
+  * @param  min_filter  OpenGL filter to use for minification
+  * @param  mag_filter  OpenGL filter to use for magnification
+  */
+  void setNormalMap(const std::string& fname, GLuint wrap_s, GLuint wrap_t, GLuint min_filter, GLuint mag_filter)
+  {
+      // Bind a DevIL image
+      ILuint id;
+      ilGenImages(1, &id);
+      ilBindImage(id);
+      ILuint err = ilGetError();
+      if (err) {
+          printf("Error binding image. %s %d\n", fname, err);
+          return;
+      }
+
+      // Load image using lower left origin. Convert to RGB. Tyr loading from 
+      // ../textures, if that fails try ../../textures
+      ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+      ilEnable(IL_ORIGIN_SET);
+      std::string full_path_name = "../textures/" + fname;
+      ilLoadImage(full_path_name.c_str());
+      err = ilGetError();
+      if (err) {
+          full_path_name = "../../textures/" + fname;
+          ilLoadImage(full_path_name.c_str());
+      }
+      err = ilGetError();
+      if (err) {
+          printf("Error loading texture. %s %d\n", fname, err);
+          return;
+      }
+      ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+      err = ilGetError();
+      if (err) {
+          printf("Could not convert texture to RGB. %s %d\n", fname, err);
+          return;
+      }
+
+      // Get image dimensions and data
+      int w = ilGetInteger(IL_IMAGE_WIDTH);
+      int h = ilGetInteger(IL_IMAGE_HEIGHT);
+
+      unsigned char* data = ilGetData();
+      if (ilGetError() != IL_NO_ERROR) {
+          std::cout << "Error getting image data" << std::endl;
+          return;
+      }
+
+      // Generate an OpenGL textureID, bind it
+      glGenTextures(1, &normalMapID);
+      glBindTexture(GL_TEXTURE_2D, normalMapID);
+
+      // Load image data and generate mipmaps
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+      glGenerateMipmap(GL_TEXTURE_2D);
+
+      // Set wrapping mode
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_s);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
+
+      // Set texture filters
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+
+      // Bind null texture
+      glBindTexture(GL_TEXTURE_2D, 0);
+  }
+
+  /**
    * Update texture filtering for this material
    * @param  min_filter  OpenGL filter to use for minification
    * @param  mag_filter  OpenGL filter to use for magnification
@@ -186,6 +261,13 @@ public:
       glBindTexture(GL_TEXTURE_2D, texture_id);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+    }
+
+    if(normalMapID)
+    {
+        glBindTexture(GL_TEXTURE_2D, normalMapID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
     }
   }
 
@@ -213,15 +295,22 @@ public:
       glUniform1i(scene_state.usetexture_loc, 0); 
     }
 
+    // Enable normal mapping and bind the texture
+    if(normalMapID)
+    {
+        glUniform1i(scene_state.usenormalmap_loc, 1);   // Tell shader we are using normal maps
+        glUniform1i(scene_state.normalmap_loc, 1);      // Texture unit 1
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, normalMapID);
+    }
+
     // Draw children of this node
     SceneNode::Draw(scene_state);
 
     // Turn off texture mapping for any nodes not descended from this presentation node
-    if (texture_id) {
-      // Disable texture mapping
-      glUniform1i(scene_state.usetexture_loc, 0);
-      glBindTexture(GL_TEXTURE_2D, 0);
-    }
+    glUniform1i(scene_state.usetexture_loc, 0);
+    glUniform1i(scene_state.usenormalmap_loc, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
   }
 
 protected:
@@ -230,7 +319,9 @@ protected:
   Color4  material_specular;
   Color4  material_emission;
   GLfloat material_shininess;
-  GLuint  texture_id;
+  
+  GLuint texture_id;
+  GLuint normalMapID;
 };
 
 #endif

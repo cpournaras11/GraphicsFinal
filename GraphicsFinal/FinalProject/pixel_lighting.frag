@@ -8,6 +8,7 @@ out vec4 fragColor;
 smooth in vec3 normal;
 smooth in vec3 vertex;
 smooth in vec2 texture;
+in mat3 tbn;
 
 // Uniforms for material properties
 uniform vec4   materialAmbient;
@@ -19,6 +20,9 @@ uniform	float  materialShininess;
 // Texture uniforms
 uniform int useTexture;
 uniform	sampler2D texImage;
+
+uniform int useNormalMap;
+uniform sampler2D normalMap;
 
 // Global lighting environment ambient intensity
 uniform vec4  globalLightAmbient;
@@ -171,6 +175,15 @@ void main()
 	// in non unit-length vectors. Cannot directly modify the varying value, so
 	// create a temporary variable here. 
 	vec3 n = normalize(normal);
+
+    if(useNormalMap == 1)
+    {
+        // Get the normal map texel in tangent coords
+        vec4 texel = texture2D(normalMap, texture);
+
+        // Set the texel to a value in the range [-1, 1] and then convert to world coords
+        n = normalize(tbn * (texel.rgb * 2.0 - 1.0));
+    }
 
 	// Construct a unit length vector from the vertex to the camera  
 	vec3 V = normalize(cameraPosition - vertex);
