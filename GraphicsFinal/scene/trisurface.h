@@ -44,7 +44,28 @@ public:
    */
   virtual void Draw(SceneState& scene_state) {
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, (GLsizei)face_count, GL_UNSIGNED_SHORT, (void*)0);
+		glClearStencil(0);
+		glClear(GL_STENCIL_BUFFER_BIT);
+
+		// Render the mesh into the stencil buffer.
+#define USE_OUTLINE 1
+#if USE_OUTLINE
+		glEnable(GL_STENCIL_TEST);
+
+		glStencilFunc(GL_ALWAYS, 1, -1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+#endif
+		glDrawElements(GL_TRIANGLES, (GLsizei)face_count, GL_UNSIGNED_SHORT, (void*)0);
+
+		// Render the thick wireframe version.
+#if USE_OUTLINE
+		glStencilFunc(GL_NOTEQUAL, 1, -1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+		glLineWidth(5);
+		glPolygonMode(GL_FRONT, GL_LINE);
+		glDrawElements(GL_LINE_STRIP, (GLsizei)face_count, GL_UNSIGNED_SHORT, (void*)0);
+#endif
     glBindVertexArray(0);
   }
 	
