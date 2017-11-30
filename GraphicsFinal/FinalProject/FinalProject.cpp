@@ -516,10 +516,7 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface
 							  GL_LINEAR,
 							  49,
 							  ".jpg");
-	Video->SetMaterialAmbient(Color4(1.0f, 1.0f, 1.0f));
-	Video->SetMaterialDiffuse(Color4(1.0f, 1.0f, 1.0f));
-	Video->SetMaterialSpecular(Color4(0.5f, 0.5f, 0.5f));
-	Video->SetMaterialShininess(75.0f);
+	Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f));
 	glutTimerFunc(1000.0f / VideoFrameRate, screenTimer, 0);
 
 	SceneNode* tv = new SceneNode;
