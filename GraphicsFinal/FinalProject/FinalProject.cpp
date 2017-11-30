@@ -700,6 +700,49 @@ SceneNode* ConstructChair(TexturedUnitSquareSurface* textured_square) {
 	return chair;
 }
 
+SceneNode* ConstructLamp(int position_loc, int normal_loc)
+{
+	ConicSurface* base = new ConicSurface(7.0f, 0.5f, 20, 36, position_loc, normal_loc);
+	ConicSurface* post = new ConicSurface(0.5f, 0.5f, 20, 36, position_loc, normal_loc);
+	ConicSurface* shade = new ConicSurface(7.0f, 4.0f, 20, 36, position_loc, normal_loc);
+
+	TransformNode* baseTransform = new TransformNode;
+	baseTransform->Translate(0.0f, 0.0f, 1.0f);
+	baseTransform->Scale(1.0f, 1.0f, 2.0f);
+	
+	TransformNode* postTransform = new TransformNode;
+	postTransform->Translate(0.0f, 0.0f, 22.0f);
+	postTransform->Scale(1.0f, 1.0f, 40.0f);
+
+	TransformNode* shadeTransform = new TransformNode;
+	shadeTransform->Translate(0.0f, 0.0f, 39.5f);
+	shadeTransform->Scale(1.0f, 1.0f, 5.0f);
+
+	PresentationNode* metal = new PresentationNode;
+	metal->SetMaterialAmbient(Color4(0.05375f, 0.05f, 0.06625f));
+	metal->SetMaterialDiffuse(Color4(0.18275f, 0.17f, 0.22525f));
+	metal->SetMaterialSpecular(Color4(0.332741f, 0.328634f, 0.346435f));
+	metal->SetMaterialShininess(30.0f);
+
+	PresentationNode* shadeMaterial = new PresentationNode;
+	shadeMaterial->SetMaterialAmbient(Color4(0.19225f, 0.19225f, 0.19225f));
+	shadeMaterial->SetMaterialDiffuse(Color4(0.50754f, 0.50754f, 0.50754f));
+	shadeMaterial->SetMaterialSpecular(Color4(0.508273f, 0.508273f, 0.508273f));
+	shadeMaterial->SetMaterialShininess(1.0f);
+
+	SceneNode* lamp = new SceneNode;
+	lamp->AddChild(metal);
+	metal->AddChild(baseTransform);
+	baseTransform->AddChild(base);
+	metal->AddChild(postTransform);
+	postTransform->AddChild(post);
+	lamp->AddChild(shadeMaterial);
+	shadeMaterial->AddChild(shadeTransform);
+	shadeTransform->AddChild(shade);
+
+	return lamp;
+}
+
 /**
  * Construct lighting for this scene. Note that it is hard coded
  * into the shader node for this exercise.
@@ -810,6 +853,10 @@ void ConstructScene() {
 
   SceneNode* tv = ConstructTV(unit_square, screen_square);
 
+  TransformNode* lampTransform = new TransformNode();
+  lampTransform->Translate(0.0f, -40.0f, 0.1f);
+  SceneNode* lamp = ConstructLamp(position_loc, normal_loc);
+
   // Use a texture for the rug
   TransformNode* rugTransform = new TransformNode();
   rugTransform->Translate(0.0f, 20.0f, 1.0f);
@@ -839,18 +886,19 @@ void ConstructScene() {
   // Add the room (walls, floor, ceiling)
   myscene->AddChild(room);
 
-  // Add the chair, couch, and tv
+  // Add the chair, couch, tv, lamp, and rug
+  myscene->AddChild(lampTransform);
+  lampTransform->AddChild(lamp);
   myscene->AddChild(chairTransform);
   chairTransform->AddChild(chair);
   myscene->AddChild(couchTransform);
   couchTransform->AddChild(couch);
   myscene->AddChild(tvTransform);
   tvTransform->AddChild(tv);
-
-  // Add the rug
   myscene->AddChild(rugMaterial);
   rugMaterial->AddChild(rugTransform);
   rugTransform->AddChild(textured_square);
+  
 }
 
 /**

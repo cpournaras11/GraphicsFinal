@@ -1,6 +1,47 @@
-﻿Build started 11/30/2017 5:47:40 AM.
+﻿Build started 12/1/2017 4:14:43 AM.
      1>Project "C:\Users\cpour\OneDrive\Documents\ComputerGraphics\GraphicsFinal\GraphicsFinal\FinalProject\FinalProject.vcxproj" on node 2 (Build target(s)).
-     1>Link:
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../include/ /I../ /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy /D WIN32 /D NDEBUG /D _WINDOWS /D _VC80_UPGRADE=0x0710 /D _MBCS /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt FinalProject.cpp
+         FinalProject.cpp
+     1>C:\Users\cpour\OneDrive\Documents\ComputerGraphics\GraphicsFinal\GraphicsFinal\geometry/point3.h(115): warning C4244: 'argument' : conversion from 'double' to 'const float', possible loss of data
+     1>C:\Users\cpour\OneDrive\Documents\ComputerGraphics\GraphicsFinal\GraphicsFinal\shader_support/glsl_shader.h(56): warning C4996: '_open': This function or variable may be unsafe. Consider using _sopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\io.h(242) : see declaration of '_open'
+     1>C:\Users\cpour\OneDrive\Documents\ComputerGraphics\GraphicsFinal\GraphicsFinal\shader_support/glsl_shader.h(60): warning C4996: '_open': This function or variable may be unsafe. Consider using _sopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\io.h(242) : see declaration of '_open'
+     1>C:\Users\cpour\OneDrive\Documents\ComputerGraphics\GraphicsFinal\GraphicsFinal\shader_support/glsl_shader.h(70): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(75): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(77): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(79): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(81): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(83): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(85): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(87): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(89): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(91): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(93): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(95): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(97): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
+     1>FinalProject.cpp(56): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
+     1>FinalProject.cpp(171): warning C4244: 'argument' : conversion from 'float' to 'unsigned int', possible loss of data
+     1>FinalProject.cpp(283): warning C4244: 'argument' : conversion from 'float' to 'unsigned int', possible loss of data
+     1>FinalProject.cpp(529): warning C4244: 'argument' : conversion from 'float' to 'unsigned int', possible loss of data
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Release\FinalProject.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:../lib devil.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"Release\FinalProject.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"Release\FinalProject.lib" /MACHINE:X86 /SAFESEH Release\gl3w.obj
+         Release\FinalProject.obj
          FinalProject.vcxproj -> C:\Users\cpour\OneDrive\Documents\ComputerGraphics\GraphicsFinal\GraphicsFinal\FinalProject\Release\FinalProject.exe
        PostBuildEvent:
          copy "..\lib\freeglut.dll" "C:\Users\cpour\OneDrive\Documents\ComputerGraphics\GraphicsFinal\GraphicsFinal\FinalProject\Release\"
@@ -14,4 +55,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.53
+Time Elapsed 00:00:02.83
