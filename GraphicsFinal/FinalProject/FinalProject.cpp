@@ -34,6 +34,8 @@ CameraNode* MyCamera;
 // Keep the spotlight global so we can update its poisition
 LightNode* Spotlight;
 
+PresentationNode* Video;
+
 // While mouse button is down, the view will be updated
 bool  Animate = false;
 bool  Forward = true;
@@ -43,6 +45,7 @@ int   MouseY;
 int   RenderWidth  = 800;
 int   RenderHeight = 600;
 const float FrameRate = 72.0f;
+const float VideoFrameRate = 16.0f;
 
 // Simple logging function
 void logmsg(const char *message, ...)
@@ -157,6 +160,20 @@ void mouseMotion(int x, int y) {
 }
 
 /**
+* Callback to update the balls in the scene
+*/
+void screenTimer(int value)
+{
+	if (Video->GetPoweredOn())
+	{
+		Video->UpdateFrame();
+		// Recursively call timer func 16 times per second for video frame rate
+		glutTimerFunc(1000.0f / VideoFrameRate, screenTimer, 0);
+		glutPostRedisplay();
+	}
+}
+
+/**
  * Keyboard callback.
  */
 void keyboard(unsigned char key, int x, int y) {
@@ -260,6 +277,11 @@ void keyboard(unsigned char key, int x, int y) {
 
    // Toggle tv on/off
    case 't':
+	   Video->TogglePower();
+	   if (Video->GetPoweredOn())
+	   {
+		   glutTimerFunc(1000.0f / VideoFrameRate, screenTimer, 0);
+	   }
 	   glutPostRedisplay();
 	   break;
   default:
@@ -445,7 +467,7 @@ SceneNode* ConstructUnitBox(UnitSquareSurface* unit_square) {
  * Construct a TV
  * @param unit_square Geometry node to use
  */
-SceneNode* ConstructTV(UnitSquareSurface* unit_square) {
+SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface* textured_square) {
 	SceneNode* box = ConstructUnitBox(unit_square);
 
 	// Create a box behind the tv as a mount
@@ -475,13 +497,32 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square) {
 	bottom->Translate(0.0f, -1.0f, 0.5f);
 	bottom->Scale(48.0f, 1.0f, 1.0f);
 
+	TransformNode* screen = new TransformNode;
+	screen->Translate(0.0f, -0.85f, 14.5f);
+	screen->RotateX(90.0f);
+	screen->Scale(48.0f, 27.0f, 0.0f);
+
 	PresentationNode* plastic = new PresentationNode();
 	plastic->SetMaterialAmbient(Color4(0.0f, 0.0f, 0.0f));
 	plastic->SetMaterialDiffuse(Color4(1.0f, 1.0f, 1.0f));
 	plastic->SetMaterialSpecular(Color4(0.5f, 0.5f, 0.5f));
 	plastic->SetMaterialShininess(75.0f);
-	SceneNode* tv = new SceneNode;
+	
+	Video = new PresentationNode();
+	Video->SetAnimatedTexture("Video/scene000",
+							  GL_CLAMP_TO_EDGE, 
+							  GL_CLAMP_TO_EDGE, 
+							  GL_LINEAR_MIPMAP_LINEAR,
+							  GL_LINEAR,
+							  49,
+							  ".jpg");
+	Video->SetMaterialAmbient(Color4(1.0f, 1.0f, 1.0f));
+	Video->SetMaterialDiffuse(Color4(1.0f, 1.0f, 1.0f));
+	Video->SetMaterialSpecular(Color4(0.5f, 0.5f, 0.5f));
+	Video->SetMaterialShininess(75.0f);
+	glutTimerFunc(1000.0f / VideoFrameRate, screenTimer, 0);
 
+	SceneNode* tv = new SceneNode;
 	tv->AddChild(plastic);
 	plastic->AddChild(mount);
 	mount->AddChild(box);
@@ -495,6 +536,9 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square) {
 	top->AddChild(box);
 	plastic->AddChild(bottom);
 	bottom->AddChild(box);
+	tv->AddChild(Video);
+	Video->AddChild(screen);
+	screen->AddChild(textured_square);
 
 	return tv;
 }
@@ -544,8 +588,11 @@ SceneNode* ConstructCouch(UnitSquareSurface* unit_square) {
 	fabric->SetMaterialDiffuse(Color4(0.5f, 0.5f, 0.5f));
 	fabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
 	fabric->SetMaterialShininess(3);
-	fabric->SetTexture("fabric.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE,
-		GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+	fabric->SetTexture("fabric.jpg", 
+					   GL_CLAMP_TO_EDGE, 
+					   GL_CLAMP_TO_EDGE,
+					   GL_LINEAR_MIPMAP_LINEAR, 
+					   GL_LINEAR);
 
 	SceneNode* couch = new SceneNode;
 	// Add pieces of couch with fabri material
@@ -751,7 +798,16 @@ void ConstructScene() {
   // Construct the tv with transform
   TransformNode* tvTransform = new TransformNode();
   tvTransform->Translate(0.0f, 99.0f, 45.0f);
-  SceneNode* tv = ConstructTV(unit_square);
+
+  TexturedUnitSquareSurface* screen_square = new TexturedUnitSquareSurface(1,
+																		   1,
+																		   position_loc,
+																		   normal_loc,
+																		   texture_loc,
+																		   tangent_loc,
+																		   bitangent_loc);
+
+  SceneNode* tv = ConstructTV(unit_square, screen_square);
 
   // Construct the scene layout
   SceneRoot = new SceneNode;
