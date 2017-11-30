@@ -160,7 +160,7 @@ void mouseMotion(int x, int y) {
 }
 
 /**
-* Callback to update the balls in the scene
+* Callback to update the tv screen in the scene
 */
 void screenTimer(int value)
 {
