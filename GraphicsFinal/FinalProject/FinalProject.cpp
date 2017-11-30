@@ -421,7 +421,7 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square,
 * Construct a a unit box with outward facing normals.
 * @param  unit_square  Geometry node to use
 */
-SceneNode* ConstructUnitBox(UnitSquareSurface* unit_square) {
+SceneNode* ConstructUnitBox(TexturedUnitSquareSurface* textured_square) {
 	// Contruct transform nodes for the sides of the box.
 	// Perform rotations so the sides face outwards
 
@@ -457,17 +457,17 @@ SceneNode* ConstructUnitBox(UnitSquareSurface* unit_square) {
 	// Create a SceneNode and add the 6 sides of the box.
 	SceneNode* box = new SceneNode;
 	box->AddChild(back_transform);
-	back_transform->AddChild(unit_square);
+	back_transform->AddChild(textured_square);
 	box->AddChild(left_transform);
-	left_transform->AddChild(unit_square);
+	left_transform->AddChild(textured_square);
 	box->AddChild(right_transform);
-	right_transform->AddChild(unit_square);
+	right_transform->AddChild(textured_square);
 	box->AddChild(front_transform);
-	front_transform->AddChild(unit_square);
+	front_transform->AddChild(textured_square);
 	box->AddChild(bottom_transform);
-	bottom_transform->AddChild(unit_square);
+	bottom_transform->AddChild(textured_square);
 	box->AddChild(top_transform);
-	top_transform->AddChild(unit_square);
+	top_transform->AddChild(textured_square);
 
 	return box;
 }
@@ -477,7 +477,7 @@ SceneNode* ConstructUnitBox(UnitSquareSurface* unit_square) {
  * @param unit_square Geometry node to use
  */
 SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface* textured_square) {
-	SceneNode* box = ConstructUnitBox(unit_square);
+	SceneNode* box = ConstructUnitBox(textured_square);
 
 	// Create a box behind the tv as a mount
 	TransformNode* mount = new TransformNode;
@@ -549,8 +549,8 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface
 	return tv;
 }
 
-SceneNode* ConstructCouch(UnitSquareSurface* unit_square) {
-	SceneNode* box = ConstructUnitBox(unit_square);
+SceneNode* ConstructCouch(TexturedUnitSquareSurface* textured_square) {
+	SceneNode* box = ConstructUnitBox(textured_square);
 
 	TransformNode* base = new TransformNode;
 	base->Translate(0.0f, 0.0f, 10.5f);
@@ -594,11 +594,8 @@ SceneNode* ConstructCouch(UnitSquareSurface* unit_square) {
 	fabric->SetMaterialDiffuse(Color4(0.5f, 0.5f, 0.5f));
 	fabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
 	fabric->SetMaterialShininess(3);
-	fabric->SetTexture("fabric.jpg", 
-					   GL_CLAMP_TO_EDGE, 
-					   GL_CLAMP_TO_EDGE,
-					   GL_LINEAR_MIPMAP_LINEAR, 
-					   GL_LINEAR);
+	fabric->SetTexture("fabric-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    fabric->setNormalMap("fabric-normal.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
 	SceneNode* couch = new SceneNode;
 	// Add pieces of couch with fabri material
@@ -630,8 +627,8 @@ SceneNode* ConstructCouch(UnitSquareSurface* unit_square) {
  * Construct a chair.
  * @param unit_square Geometry node to use
  */
-SceneNode* ConstructChair(UnitSquareSurface* unit_square) {
-	SceneNode* box = ConstructUnitBox(unit_square);
+SceneNode* ConstructChair(TexturedUnitSquareSurface* textured_square) {
+	SceneNode* box = ConstructUnitBox(textured_square);
 
 	TransformNode* base = new TransformNode;
 	base->Translate(0.0f, 0.0f, 10.5f);
@@ -675,8 +672,8 @@ SceneNode* ConstructChair(UnitSquareSurface* unit_square) {
 	fabric->SetMaterialDiffuse(Color4(0.5f, 0.5f, 0.5f));
 	fabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
 	fabric->SetMaterialShininess(3);
-	fabric->SetTexture("fabric.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE,
-		GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+	fabric->SetTexture("fabric-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    fabric->setNormalMap("fabric-normal.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
 	SceneNode* chair = new SceneNode;
 	// Add pieces of couch with fabri material
@@ -792,13 +789,13 @@ void ConstructScene() {
   TransformNode* chairTransform = new TransformNode();
   chairTransform->Translate(20.0f, -15.0f, 0.0f);
   chairTransform->RotateZ(225.0f);
-  SceneNode* chair = ConstructChair(unit_square);
+  SceneNode* chair = ConstructChair(textured_square);
 
   // Construct the couch with transform
   TransformNode* couchTransform = new TransformNode();
   couchTransform->Translate(-30.0f, -10.0f, 0.0f);
   couchTransform->RotateZ(135.0f);
-  SceneNode* couch = ConstructCouch(unit_square);
+  SceneNode* couch = ConstructCouch(textured_square);
 
   // Construct the tv with transform
   TransformNode* tvTransform = new TransformNode();
