@@ -190,7 +190,7 @@ public:
 		GLuint min_filter, GLuint mag_filter, int frames, const std::string& ext) {
 		this->texture_ids = std::vector<GLuint>();
 		this->frames = frames;
-		for (int i = 1; i <= frames; i++)
+		for (int i = 1; i <= frames + 1; i++)
 		{
 			// Bind a DevIL image
 			ILuint id;
@@ -435,6 +435,11 @@ public:
 	void TogglePower()
 	{
 		powered_on = !powered_on;
+
+		if (!powered_on)
+		{
+			texture_id = texture_ids[frames];
+		}
 	}
 
 protected:
