@@ -60,7 +60,6 @@ public:
   * @param  n   Number of subdivisions in x and y
   */
   TexturedUnitSquareSurface(unsigned int n, 
-                            float texture_scale, 
                             const int position_loc,
                             const int normal_loc, 
                             const int texture_loc, 
@@ -74,18 +73,17 @@ public:
     // Normal is 0,0,1. z = 0 so all vertices lie in x,y plane.
     // Having issues with roundoff when n = 40,50 - so compare with some tolerance
     // Store in column order.
-    float ds = texture_scale / n;
-    float dt = texture_scale / n;
     PNTVertex vtx;
     vtx.normal.Set(0.0f, 0.0f, 1.0f);
     vtx.vertex.z = 0.0f;
     float spacing = 1.0f / n;
-    for (vtx.vertex.y = -0.5, vtx.t = 0.0f; vtx.vertex.y <= 0.5f + kEpsilon;
-      vtx.vertex.y += spacing, vtx.t += dt) {
-      for (vtx.vertex.x = -0.5, vtx.s = 0.0f; vtx.vertex.x <= 0.5f + kEpsilon;
-        vtx.vertex.x += spacing, vtx.s += ds) {
-        vertices.push_back(vtx);
-      }
+    
+    for(vtx.vertex.y = -0.5, vtx.t = 0.0f; vtx.vertex.y <= 0.5f + kEpsilon; vtx.vertex.y += spacing, vtx.t += spacing)
+    {
+        for(vtx.vertex.x = -0.5, vtx.s = 0.0f; vtx.vertex.x <= 0.5f + kEpsilon; vtx.vertex.x += spacing, vtx.s += spacing)
+        {
+            vertices.push_back(vtx);
+        }
     }
 
     // Construct face list and create vertex buffer objects

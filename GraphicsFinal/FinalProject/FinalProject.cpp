@@ -373,7 +373,9 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square,
                                                             Color4(0.2f, 0.2f, 0.2f), 
                                                             Color4(0.0f, 0.0f, 0.0f), 
                                                             5.0f);
-	floor_material->SetTexture("floor_tiles.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+	floor_material->SetTexture("wood-floor-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    floor_material->setNormalMap("wood-floor-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    floor_material->setTextureScale(4.0f);
 
 	// Use a texture for the walls
 	PresentationNode* wall_material = new PresentationNode(Color4(0.35f, 0.225f, 0.275f),
@@ -382,11 +384,18 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square,
                                                            Color4(0.0f, 0.0f, 0.0f), 
                                                            16.0f);
     wall_material->SetTexture("masonry-wall-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    wall_material->setNormalMap("masonry-wall-normal-map.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    wall_material->setNormalMap("masonry-wall-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    wall_material->setTextureScale(4.0f);
 
-	// Ceiling should be white, moderately shiny
+	// Use a texture for the ceiling
 	PresentationNode* ceiling_material = new PresentationNode(Color4(0.75f, 0.75f, 0.75f),
-		Color4(1.0f, 1.0f, 1.0f), Color4(0.9f, 0.9f, 0.9f), Color4(0.0f, 0.0f, 0.0f), 64.0);
+		                                                      Color4(1.0f, 1.0f, 1.0f), 
+                                                              Color4(0.9f, 0.9f, 0.9f), 
+                                                              Color4(0.0f, 0.0f, 0.0f), 
+                                                              64.0);
+    ceiling_material->SetTexture("ceiling-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    ceiling_material->setNormalMap("ceiling-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    ceiling_material->setTextureScale(8.0f);
 
 	// Walls. We can group these all under a single presentation node.
 	SceneNode* room = new SceneNode;
@@ -403,7 +412,7 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square,
 	// Add floor and ceiling to the parent. Use convenience method to add
 	// presentation, then transform, then geometry.
 	AddSubTree(room, floor_material, floor_transform, textured_square);
-	AddSubTree(room, ceiling_material, ceiling_transform, unit_square);
+	AddSubTree(room, ceiling_material, ceiling_transform, textured_square);
 
 	return room;
 }
@@ -768,7 +777,6 @@ void ConstructScene() {
 
   // Construct a textured square for the floor
   TexturedUnitSquareSurface* textured_square = new TexturedUnitSquareSurface(2, 
-                                                                             2, 
                                                                              position_loc, 
                                                                              normal_loc, 
                                                                              texture_loc, 
@@ -797,7 +805,6 @@ void ConstructScene() {
   tvTransform->Translate(0.0f, 99.0f, 45.0f);
 
   TexturedUnitSquareSurface* screen_square = new TexturedUnitSquareSurface(1,
-																		   1,
 																		   position_loc,
 																		   normal_loc,
 																		   texture_loc,
@@ -805,6 +812,21 @@ void ConstructScene() {
 																		   bitangent_loc);
 
   SceneNode* tv = ConstructTV(unit_square, screen_square);
+
+  // Use a texture for the rug
+  TransformNode* rugTransform = new TransformNode();
+  rugTransform->Translate(0.0f, 20.0f, 1.0f);
+  rugTransform->RotateZ(45.0f);
+  rugTransform->Scale(60.0, 60.0, 1.0f);
+
+  PresentationNode* rugMaterial = new PresentationNode(Color4(0.4f, 0.4f, 0.4f), 
+                                                       Color4(0.75f, 0.75f, 0.75f), 
+                                                       Color4(0.2f, 0.2f, 0.2f), 
+                                                       Color4(0.0f, 0.0f, 0.0f), 
+                                                       5.0);
+  rugMaterial->SetTexture("rug-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+  rugMaterial->setNormalMap("rug-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+  rugMaterial->setTextureScale(2.0f);
 
   // Construct the scene layout
   SceneRoot = new SceneNode;
@@ -827,6 +849,11 @@ void ConstructScene() {
   couchTransform->AddChild(couch);
   myscene->AddChild(tvTransform);
   tvTransform->AddChild(tv);
+
+  // Add the rug
+  myscene->AddChild(rugMaterial);
+  rugMaterial->AddChild(rugTransform);
+  rugTransform->AddChild(textured_square);
 }
 
 /**

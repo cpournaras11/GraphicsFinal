@@ -23,13 +23,11 @@ public:
 	/**
 	 * Constructor
 	 */
-	PresentationNode() {
-		node_type = SCENE_PRESENTATION;
-		reference_count = 0;
-		material_shininess = 1.0f;
-		texture_id = 0;             // Default to no texture
-		normalMapID = 0;               // Default to no normal map
+	PresentationNode()
+    {
+		initialize();
 
+        material_shininess = 1.0f;
 		// Note: color constructors default rgb to 0 and alpha to 1
 	}
 
@@ -41,18 +39,28 @@ public:
 	 * @param  me  Material emission (color).
 	 * @param  s   Material shininess.
 	 */
-	PresentationNode(const Color4& ma, const Color4& md, const Color4& ms,
-		const Color4& me, const float s)
-		: material_ambient(ma),
+	PresentationNode(const Color4& ma, const Color4& md, const Color4& ms, const Color4& me, const float s)
+      : material_ambient(ma),
 		material_diffuse(md),
 		material_specular(ms),
 		material_emission(me),
-		material_shininess(s),
-		texture_id(0),
-		normalMapID(0) {
-		node_type = SCENE_PRESENTATION;
-		reference_count = 0;
+		material_shininess(s)
+    {
+        initialize();
 	}
+
+    /**
+     * Initialize the presentation node attributes
+     */
+    void initialize()
+    {
+        node_type = SCENE_PRESENTATION;
+        reference_count = 0;
+
+        texture_id = 0;       // Default to no texture
+        textureScale = 1.0f;  // Default texture scale to normal size
+        normalMapID = 0;      // Default to no normal map
+    }
 
 	/**
 	 * Set material ambient reflection coefficient.
@@ -364,6 +372,15 @@ public:
 		}
 	}
 
+    /**
+     * Scales the texture by the specified factor
+     * @param  scale  The factor to scale the texture coordinates by
+     */
+    void setTextureScale(float scale)
+    {
+        textureScale = scale;
+    }
+
 	/**
 	 * Draw. Sets the material properties.
 	 * @param  scene_state  Scene state (holds material uniform locations)
@@ -378,7 +395,9 @@ public:
 
 		// Enable texture mapping and bind the texture
 		if (texture_id) {
-			glUniform1i(scene_state.usetexture_loc, 1);   // Tell shader we are using textures
+            glUniform1i(scene_state.usetexture_loc, 1);   // Tell shader we are using textures
+            glUniform1f(scene_state.texturescale_loc, textureScale);
+
 			glUniform1i(scene_state.textureunit_loc, 0);  // Texture unit 0
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -452,6 +471,7 @@ protected:
 	std::vector<GLuint> texture_ids;
 	GLuint texture_id;
 	GLuint normalMapID;
+    float textureScale;
 
 	int texture_index;
 	int frames;

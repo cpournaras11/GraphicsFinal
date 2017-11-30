@@ -62,6 +62,7 @@ struct SceneState {
 
   // Texture mapping
   GLint usetexture_loc;
+  GLint texturescale_loc;
   GLint textureunit_loc;
 
   GLint usenormalmap_loc;  // Normal map flag location

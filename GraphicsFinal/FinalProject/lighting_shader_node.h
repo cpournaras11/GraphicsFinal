@@ -115,6 +115,7 @@ public:
 
     // Populate texture locations
     usetexture_loc = glGetUniformLocation(shader_program.GetProgram(), "useTexture");
+    texturescale_loc = glGetUniformLocation(shader_program.GetProgram(), "textureScale");
     textureunit_loc = glGetUniformLocation(shader_program.GetProgram(), "texImage");
 
     usenormalmap_loc = glGetUniformLocation(shader_program.GetProgram(), "useNormalMap");
@@ -153,6 +154,7 @@ public:
 
     // Set texture uniform locations
     scene_state.usetexture_loc = usetexture_loc;
+    scene_state.texturescale_loc = texturescale_loc;
     scene_state.textureunit_loc = textureunit_loc;
 
     scene_state.usenormalmap_loc = usenormalmap_loc;
@@ -234,6 +236,7 @@ protected:
 
   // Texture uniform locations
   GLint usetexture_loc;       // Texture use flag location
+  GLint texturescale_loc;     // Texture scale location
   GLint textureunit_loc;      // Texture unit location
 
   GLint usenormalmap_loc;      // Normal map use flag location

@@ -19,6 +19,7 @@ uniform	float  materialShininess;
 
 // Texture uniforms
 uniform int useTexture;
+uniform float textureScale;
 uniform	sampler2D texImage;
 
 uniform int useNormalMap;
@@ -179,7 +180,7 @@ void main()
     if(useNormalMap == 1)
     {
         // Get the normal map texel in tangent coords
-        vec4 texel = texture2D(normalMap, texture);
+        vec4 texel = texture2D(normalMap, texture * textureScale);
 
         // Set the texel to a value in the range [-1, 1] and then convert to world coords
         n = normalize(tbn * (texel.rgb * 2.0 - 1.0));
@@ -212,10 +213,10 @@ void main()
 	vec4 color = materialEmission + globalLightAmbient * materialAmbient +
 			(ambient  * materialAmbient) + (diffuse  * materialDiffuse) + (specular * materialSpecular);
      
-  if (useTexture == 1)
-  {
-    // If a texture is bound, get its texel and modulate lighting and texture color
-		vec4 texel = texture2D(texImage, texture);
+    if(useTexture == 1)
+    {
+        // If a texture is bound, get its texel and modulate lighting and texture color
+		vec4 texel = texture2D(texImage, texture * textureScale);
 		color = vec4(color.rgb * texel.rgb, color.a * texel.a);
 	}		
 	fragColor = clamp(color, 0.0, 1.0);
