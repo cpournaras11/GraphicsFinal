@@ -711,8 +711,8 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc)
 	baseTransform->Scale(1.0f, 1.0f, 2.0f);
 	
 	TransformNode* postTransform = new TransformNode;
-	postTransform->Translate(0.0f, 0.0f, 22.0f);
-	postTransform->Scale(1.0f, 1.0f, 40.0f);
+	postTransform->Translate(0.0f, 0.0f, 21.0f);
+	postTransform->Scale(1.0f, 1.0f, 38.0f);
 
 	TransformNode* shadeTransform = new TransformNode;
 	shadeTransform->Translate(0.0f, 0.0f, 39.5f);
