@@ -1,4 +1,4 @@
-﻿Build started 12/1/2017 5:16:22 AM.
+﻿Build started 12/1/2017 5:59:49 AM.
      1>Project "C:\Users\cpour\OneDrive\Documents\ComputerGraphics\GraphicsFinal\GraphicsFinal\FinalProject\FinalProject.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../include/ /I../ /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy /D WIN32 /D NDEBUG /D _WINDOWS /D _VC80_UPGRADE=0x0710 /D _MBCS /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt FinalProject.cpp
@@ -34,11 +34,11 @@
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
      1>c:\users\cpour\onedrive\documents\computergraphics\graphicsfinal\graphicsfinal\finalproject\lighting_shader_node.h(97): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(356) : see declaration of 'sprintf'
-     1>FinalProject.cpp(54): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>FinalProject.cpp(56): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(211) : see declaration of 'fopen'
-     1>FinalProject.cpp(169): warning C4244: 'argument' : conversion from 'float' to 'unsigned int', possible loss of data
-     1>FinalProject.cpp(281): warning C4244: 'argument' : conversion from 'float' to 'unsigned int', possible loss of data
-     1>FinalProject.cpp(527): warning C4244: 'argument' : conversion from 'float' to 'unsigned int', possible loss of data
+     1>FinalProject.cpp(171): warning C4244: 'argument' : conversion from 'float' to 'unsigned int', possible loss of data
+     1>FinalProject.cpp(283): warning C4244: 'argument' : conversion from 'float' to 'unsigned int', possible loss of data
+     1>FinalProject.cpp(529): warning C4244: 'argument' : conversion from 'float' to 'unsigned int', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Release\FinalProject.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:../lib devil.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"Release\FinalProject.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"Release\FinalProject.lib" /MACHINE:X86 /SAFESEH Release\gl3w.obj
          Release\FinalProject.obj
@@ -55,4 +55,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.83
+Time Elapsed 00:00:02.73

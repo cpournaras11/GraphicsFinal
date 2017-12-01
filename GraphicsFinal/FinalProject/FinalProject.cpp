@@ -704,8 +704,8 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc, int texture_loc, int 
 {
 	TexturedConicSurface* base = new TexturedConicSurface(7.0f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
 	TexturedConicSurface* post = new TexturedConicSurface(0.5f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
-	//TexturedConicSurface* shade = new TexturedConicSurface(7.0f, 4.0f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
-    TroughSurface* shade = new TroughSurface(20, 20, position_loc, normal_loc);
+	TexturedSphereSection* cap = new TexturedSphereSection(0.0f, 360.0f, 36, 0.0f, 360.0f, 18, 0.5f, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
+	TroughSurface* shade = new TroughSurface(20, 20, position_loc, normal_loc);
 
 	TransformNode* baseTransform = new TransformNode;
 	baseTransform->Translate(0.0f, 0.0f, 1.0f);
@@ -714,6 +714,9 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc, int texture_loc, int 
 	TransformNode* postTransform = new TransformNode;
 	postTransform->Translate(0.0f, 0.0f, 21.0f);
 	postTransform->Scale(1.0f, 1.0f, 38.0f);
+
+	TransformNode* capTransform = new TransformNode;
+	capTransform->Translate(0.0f, 0.0f, 40.0f);
 
 	TransformNode* shadeTransform = new TransformNode;
 	shadeTransform->Translate(0.0f, 0.0f, 39.5f);
@@ -738,6 +741,8 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc, int texture_loc, int 
 	baseTransform->AddChild(base);
 	metal->AddChild(postTransform);
 	postTransform->AddChild(post);
+	metal->AddChild(capTransform);
+	capTransform->AddChild(cap);
 	lamp->AddChild(shadeMaterial);
 	shadeMaterial->AddChild(shadeTransform);
 	shadeTransform->AddChild(shade);
