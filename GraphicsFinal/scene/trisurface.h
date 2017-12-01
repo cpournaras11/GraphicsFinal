@@ -48,7 +48,7 @@ public:
 		glClear(GL_STENCIL_BUFFER_BIT);
 
 		// Render the mesh into the stencil buffer.
-#define USE_OUTLINE 1
+#define USE_OUTLINE 0
 #if USE_OUTLINE
 		glEnable(GL_STENCIL_TEST);
 

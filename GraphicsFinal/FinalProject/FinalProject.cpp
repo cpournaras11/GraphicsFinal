@@ -24,6 +24,8 @@
 // NOTE - moved object geometry nodes to scene directory
 #include "lighting_shader_node.h"
 
+#include "TroughSurface.h"
+
 // Root of the scene graph and scene state
 SceneNode* SceneRoot;
 SceneState MySceneState;
@@ -702,7 +704,8 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc, int texture_loc, int 
 {
 	TexturedConicSurface* base = new TexturedConicSurface(7.0f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
 	TexturedConicSurface* post = new TexturedConicSurface(0.5f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
-	TexturedConicSurface* shade = new TexturedConicSurface(7.0f, 4.0f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
+	//TexturedConicSurface* shade = new TexturedConicSurface(7.0f, 4.0f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
+    TroughSurface* shade = new TroughSurface(20, 20, position_loc, normal_loc);
 
 	TransformNode* baseTransform = new TransformNode;
 	baseTransform->Translate(0.0f, 0.0f, 1.0f);
@@ -714,7 +717,7 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc, int texture_loc, int 
 
 	TransformNode* shadeTransform = new TransformNode;
 	shadeTransform->Translate(0.0f, 0.0f, 39.5f);
-	shadeTransform->Scale(1.0f, 1.0f, 5.0f);
+	shadeTransform->Scale(5.0f, 5.0f, 20.0f);
 
 	PresentationNode* metal = new PresentationNode;
 	metal->SetMaterialAmbient(Color4(0.05375f, 0.05f, 0.06625f));
