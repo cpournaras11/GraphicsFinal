@@ -31,9 +31,7 @@ SceneState MySceneState;
 // Global camera node (so we can change view)
 CameraNode* MyCamera;
 
-// Keep the spotlight global so we can update its poisition
-LightNode* Spotlight;
-
+// Animated presentation node (global so we can toggle the tv power)
 PresentationNode* Video;
 
 // While mouse button is down, the view will be updated
@@ -700,11 +698,11 @@ SceneNode* ConstructChair(TexturedUnitSquareSurface* textured_square) {
 	return chair;
 }
 
-SceneNode* ConstructLamp(int position_loc, int normal_loc)
+SceneNode* ConstructLamp(int position_loc, int normal_loc, int texture_loc, int tangent_loc, int bitangent_loc)
 {
-	ConicSurface* base = new ConicSurface(7.0f, 0.5f, 20, 36, position_loc, normal_loc);
-	ConicSurface* post = new ConicSurface(0.5f, 0.5f, 20, 36, position_loc, normal_loc);
-	ConicSurface* shade = new ConicSurface(7.0f, 4.0f, 20, 36, position_loc, normal_loc);
+	TexturedConicSurface* base = new TexturedConicSurface(7.0f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
+	TexturedConicSurface* post = new TexturedConicSurface(0.5f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
+	TexturedConicSurface* shade = new TexturedConicSurface(7.0f, 4.0f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
 
 	TransformNode* baseTransform = new TransformNode;
 	baseTransform->Translate(0.0f, 0.0f, 1.0f);
@@ -728,6 +726,7 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc)
 	shadeMaterial->SetMaterialAmbient(Color4(0.19225f, 0.19225f, 0.19225f));
 	shadeMaterial->SetMaterialDiffuse(Color4(0.50754f, 0.50754f, 0.50754f));
 	shadeMaterial->SetMaterialSpecular(Color4(0.508273f, 0.508273f, 0.508273f));
+	shadeMaterial->SetMaterialEmission(Color4(0.7f, 0.7f, 0.7f));
 	shadeMaterial->SetMaterialShininess(1.0f);
 
 	SceneNode* lamp = new SceneNode;
@@ -748,40 +747,39 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc)
  * into the shader node for this exercise.
  * @param  lighting  Pointer to the lighting shader node.
  */
-void ConstructLighting(LightingShaderNode* lighting) {
+LightNode* ConstructLighting(LightingShaderNode* lighting) {
   // Set the global light ambient
   Color4 globalAmbient(0.4f, 0.4f, 0.4f, 1.0f);
   lighting->SetGlobalAmbient(globalAmbient);
 
   // Light 0 - point light source in back right corner
-  LightNode* light0 = new LightNode(0);
-  light0->SetDiffuse(Color4(0.5f, 0.5f, 0.5f, 1.0f));
-  light0->SetSpecular(Color4(0.5f, 0.5f, 0.5f, 1.0f));
-  light0->SetPosition(HPoint3(90.0f, 90.0f, 30.f, 1.0f));
-  light0->Enable();
+  LightNode* lamplight1 = new LightNode(0);
+  lamplight1->SetDiffuse(Color4(0.5f, 0.5f, 0.5f, 1.0f));
+  lamplight1->SetSpecular(Color4(0.5f, 0.5f, 0.5f, 1.0f));
+  lamplight1->SetPosition(HPoint3(0.0f, -40.0f, 38.0f, 1.0f));
+  lamplight1->SetSpotlight(Vector3(0.0f, 0.0f, 1.0f), 20.0f, 20.0f);
+  lamplight1->Enable();
+
+  LightNode* lamplight2 = new LightNode(1);
+  lamplight2->SetDiffuse(Color4(0.5f, 0.5f, 0.5f, 1.0f));
+  lamplight2->SetSpecular(Color4(0.5f, 0.05f, 0.5f, 1.0f));
+  lamplight2->SetPosition(HPoint3(0.0f, -40.0f, 50.0f, 1.0f));
+  lamplight2->SetSpotlight(Vector3(0.0f, 0.0f, -1.0f), 40.0f, 55.0f);
+  lamplight2->Enable();
 
   // Light1 - directional light from the ceiling
-  LightNode* light1 = new LightNode(1);
-  light1->SetDiffuse(Color4(0.7f, 0.7f, 0.7f, 1.0f));
-  light1->SetSpecular(Color4(0.7f, 0.7f, 0.7f, 1.0f));
+  LightNode* light1 = new LightNode(2);
+  light1->SetDiffuse(Color4(0.5f, 0.5f, 0.5f, 1.0f));
+  light1->SetSpecular(Color4(0.5f, 0.5f, 0.5f, 1.0f));
   light1->SetPosition(HPoint3(0.0f, 0.0f, 1.0f, 0.0f));
   light1->Enable();
 
-  // Spotlight - reddish spotlight - we will place at the camera location
-  // shining along -VPN
-  Spotlight = new LightNode(2);
-  Spotlight->SetDiffuse(Color4(0.5f, 0.1f, 0.1f, 1.0f));
-  Spotlight->SetSpecular(Color4(0.5f, 0.1f, 0.1f, 1.0f));
-  Point3 pos = MyCamera->GetPosition();
-  Spotlight->SetPosition(HPoint3(pos.x, pos.y, pos.z, 1.0f));
-  Vector3 dir = MyCamera->GetViewPlaneNormal() * -1.0f;
-  Spotlight->SetSpotlight(dir, 32.0f, 30.0f);
- // Spotlight->Enable();
-
   // Lights are children of the camera node
-  MyCamera->AddChild(light0);
-  light0->AddChild(light1);
-  light1->AddChild(Spotlight);
+  MyCamera->AddChild(lamplight1);
+  lamplight1->AddChild(lamplight2);
+  lamplight2->AddChild(light1);
+
+  return light1;
 }
 
 /**
@@ -810,7 +808,7 @@ void ConstructScene() {
   MyCamera->SetPerspective(50.0, 1.0, 1.0, 300.0);
 
   // Construct scene lighting - make lighting nodes children of the camera node
-  ConstructLighting(shader);
+  LightNode* light = ConstructLighting(shader);
 
   // Construct subdivided square - subdivided 10x in both x and y
   UnitSquareSurface* unit_square = new UnitSquareSurface(2, position_loc, normal_loc);
@@ -855,7 +853,7 @@ void ConstructScene() {
 
   TransformNode* lampTransform = new TransformNode();
   lampTransform->Translate(0.0f, -40.0f, 0.1f);
-  SceneNode* lamp = ConstructLamp(position_loc, normal_loc);
+  SceneNode* lamp = ConstructLamp(position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
 
   // Use a texture for the rug
   TransformNode* rugTransform = new TransformNode();
@@ -881,14 +879,12 @@ void ConstructScene() {
   // of the last light node (so entire scene is under influence of all 
   // lights)
   SceneNode* myscene = new SceneNode;
-  Spotlight->AddChild(myscene);
+  light->AddChild(myscene);
 
   // Add the room (walls, floor, ceiling)
   myscene->AddChild(room);
 
   // Add the chair, couch, tv, lamp, and rug
-  myscene->AddChild(lampTransform);
-  lampTransform->AddChild(lamp);
   myscene->AddChild(chairTransform);
   chairTransform->AddChild(chair);
   myscene->AddChild(couchTransform);
@@ -896,6 +892,8 @@ void ConstructScene() {
   myscene->AddChild(tvTransform);
   tvTransform->AddChild(tv);
   myscene->AddChild(rugMaterial);
+  myscene->AddChild(lampTransform);
+  lampTransform->AddChild(lamp);
   rugMaterial->AddChild(rugTransform);
   rugTransform->AddChild(textured_square);
   
