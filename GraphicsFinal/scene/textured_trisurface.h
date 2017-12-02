@@ -42,8 +42,31 @@ public:
   */
   void Draw(SceneState& scene_state) {
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, (GLsizei)face_count, GL_UNSIGNED_SHORT, (void*)0);
-    glBindVertexArray(0);
+		// Render the mesh into the stencil buffer.
+#define USE_OUTLINE_TEXTURE 0
+#if USE_OUTLINE_TEXTURE
+		glEnable(GL_STENCIL_TEST);
+
+		glStencilFunc(GL_ALWAYS, 1, -1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+#endif
+		//glEnable(GL_STENCIL_TEST);
+
+
+		glDrawElements(GL_TRIANGLES, (GLsizei)face_count, GL_UNSIGNED_SHORT, (void*)0);
+
+
+		// Render the thick wireframe version.
+#if USE_OUTLINE_TEXTURE
+		glStencilFunc(GL_NOTEQUAL, 1, -1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+		glLineWidth(10);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDrawElements(GL_LINE_LOOP, (GLsizei)face_count, GL_UNSIGNED_SHORT, (void*)0);
+#endif
+		glBindVertexArray(0);
+
 
     // Disable texture vertex attribute 
     glDisableVertexAttribArray(scene_state.texture_loc);

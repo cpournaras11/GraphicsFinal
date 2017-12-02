@@ -705,7 +705,7 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc, int texture_loc, int 
 	TexturedConicSurface* base = new TexturedConicSurface(7.0f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
 	TexturedConicSurface* post = new TexturedConicSurface(0.5f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
 	TexturedSphereSection* cap = new TexturedSphereSection(0.0f, 360.0f, 36, 0.0f, 360.0f, 18, 0.5f, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
-	TroughSurface* shade = new TroughSurface(20, 20, position_loc, normal_loc);
+	TexturedTroughSurface* shade = new TexturedTroughSurface(20, 20, position_loc, normal_loc,texture_loc,tangent_loc,bitangent_loc);
 
 	TransformNode* baseTransform = new TransformNode;
 	baseTransform->Translate(0.0f, 0.0f, 1.0f);
