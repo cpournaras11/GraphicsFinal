@@ -45,7 +45,7 @@ int   MouseY;
 int   RenderWidth  = 800;
 int   RenderHeight = 600;
 const float FrameRate = 72.0f;
-const float VideoFrameRate = 16.0f;
+const float VideoFrameRate = 21.0f;
 
 int useRealistic = 0;
 bool useOutline = true;
