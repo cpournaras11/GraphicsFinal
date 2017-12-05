@@ -60,6 +60,9 @@ struct SceneState {
   GLint materialemission_loc;  // Material emission location
   GLint materialshininess_loc; // Material shininess location
 
+	//Outline Enable
+	GLint outlineEnable_loc;
+
   // Texture mapping
   GLint usetexture_loc;
   GLint texturescale_loc;

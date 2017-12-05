@@ -152,7 +152,7 @@ public:
 				float thetaDelta = (2.0f * kPi) / static_cast<float>(numSides);
 
 				bool flipNormals = false;
-
+				 
 				PNTVertex vtx;
 
 				// Iterate over the exterior vertices first, then the interior vertices
@@ -164,7 +164,6 @@ public:
 								float theta = 0.0f;
 								vtx.t = z*2 + 0.5f;
 
-								printf("%f \n", vtx.s);
 
 								// Iterate over the sides (columns)
 								for (uint32_t k = 0; k < numSides; k++)

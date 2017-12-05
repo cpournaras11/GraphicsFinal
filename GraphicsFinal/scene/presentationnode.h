@@ -115,6 +115,8 @@ public:
 		material_shininess = s;
 	}
 
+
+
 	/**
 	 * Set the texture to used for the material.
 	 * @param  fname  Texture image filename
@@ -432,6 +434,7 @@ public:
 
 		// Draw children of this node
 		SceneNode::Draw(scene_state);
+
 
 		// Turn off texture mapping for any nodes not descended from this presentation node
 		glUniform1i(scene_state.usetexture_loc, 0);

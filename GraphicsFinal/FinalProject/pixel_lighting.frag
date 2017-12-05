@@ -17,6 +17,9 @@ uniform	vec4   materialSpecular;
 uniform	vec4   materialEmission;
 uniform	float  materialShininess;
 
+//outline uniforms
+uniform int outlineEnable;
+
 // Texture uniforms
 uniform int useTexture;
 uniform float textureScale;
@@ -264,19 +267,23 @@ void main()
         // If a texture is bound, get its texel and modulate lighting and texture color
 		vec4 texel = texture2D(texImage, texture * textureScale);
 		color = vec4(color.rgb * texel.rgb, color.a * texel.a);
-		
-		if(texture[0] <= 0.025 || texture[0] >= 0.975)
-			color = vec4(0.0);
+		if(outlineEnable == 1)
+		{
+				if(texture[0] <= 0.025 || texture[0] >= 0.975)
+					color = vec4(0.0);
 
-		if(texture[1]  <= 0.05 || texture[1] >= 0.975)
-			color = vec4(0.0);
+				if(texture[1]  <= 0.025 || texture[1] >= 0.975)
+					color = vec4(0.0);
+		}
 	}
-	
+	    
+  if(outlineEnable == 1)
+  {
 	if(texture[0] <= 0.025 || texture[0] >= 0.975)
 		color = vec4(0.0);
 	
-	if(texture[1]  <= 0.05 || texture[1] >= 0.975)
+	if(texture[1]  <= 0.025 || texture[1] >= 0.975)
 		color = vec4(0.0);
-
+	}
 	fragColor = clamp(color, 0.0, 1.0);
 }

@@ -3,3 +3,11 @@
 ################################################################################
 
 /GraphicsFinal/.vs/ComputerGraphics/v15/Browse.VC.opendb
+*.suo
+*.db
+*.ipch
+*.log
+*.pdb
+/.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
+/.vs/ProjectSettings.json

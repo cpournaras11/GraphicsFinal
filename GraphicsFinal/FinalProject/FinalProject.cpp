@@ -48,6 +48,7 @@ const float FrameRate = 72.0f;
 const float VideoFrameRate = 16.0f;
 
 int useRealistic = 0;
+bool useOutline = true;
 
 PresentationNode* floorMaterial;
 PresentationNode* wallMaterial;
@@ -210,6 +211,12 @@ void toggleShaderModes()
     // Toggle realistic lighting
     glUniform1i(MySceneState.usereallighting_loc, useRealistic);
 }
+void toggleOutlines()
+{
+		useOutline = (useOutline == 0) ? 1 : 0;
+		glUniform1i(MySceneState.outlineEnable_loc, useOutline);
+
+}
 
 /**
  * Keyboard callback.
@@ -325,7 +332,13 @@ void keyboard(unsigned char key, int x, int y) {
    // Toggle shader modes
    case 'd':
        toggleShaderModes();
+			 glutPostRedisplay();
        break;
+			 //toggle outlines
+	 case 'o':
+				toggleOutlines();
+				glutPostRedisplay();
+				break;
   default:
     break;
   }
@@ -553,7 +566,7 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface
 
 	PresentationNode* plastic = new PresentationNode();
 	plastic->SetMaterialAmbient(Color4(0.0f, 0.0f, 0.0f));
-	plastic->SetMaterialDiffuse(Color4(1.0f, 1.0f, 1.0f));
+	plastic->SetMaterialDiffuse(Color4(0.2f, 0.2f, 0.2f));
 	plastic->SetMaterialSpecular(Color4(0.5f, 0.5f, 0.5f));
 	plastic->SetMaterialShininess(75.0f);
 	
@@ -962,6 +975,7 @@ int main(int argc, char** argv) {
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "t - Toggle TV Power" << std::endl;
   std::cout << "d - Toggle textures and realistic vs non realistic shading" << std::endl;
+	std::cout << "o - Toggle outlines" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "ESC - Exit Program" << std::endl;
   

@@ -59,6 +59,9 @@ public:
       return false;
     }
 
+		//get the outline toggle
+		outlineEnable_loc = glGetUniformLocation(shader_program.GetProgram(), "outlineEnable");
+
     // Populate camera position uniform location in scene state
     cameraposition_loc = glGetUniformLocation(shader_program.GetProgram(), "cameraPosition");
 
@@ -155,6 +158,9 @@ public:
     scene_state.materialemission_loc = materialemission_loc;
     scene_state.materialshininess_loc = materialshininess_loc;
 
+		// Set outline uniform location
+		scene_state.outlineEnable_loc = outlineEnable_loc;
+
     // Set texture uniform locations
     scene_state.usetexture_loc = usetexture_loc;
     scene_state.texturescale_loc = texturescale_loc;
@@ -230,6 +236,9 @@ protected:
   GLint modelmatrix_loc;	    // Modeling composite matrix location
   GLint normalmatrix_loc;		  // Normal transformation matrix location
   GLint cameraposition_loc;   // Camera position uniform location
+
+	// Outline Enable
+	GLint outlineEnable_loc;
 
   // Material uniform locations
   GLint materialambient_loc;  // Material ambient location
