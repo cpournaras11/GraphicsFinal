@@ -571,12 +571,12 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface
 	plastic->SetMaterialShininess(75.0f);
 	
 	Video = new PresentationNode();
-	Video->SetAnimatedTexture("Video/scene000",
+	Video->SetAnimatedTexture("Video/futurama00",
 							  GL_CLAMP_TO_EDGE, 
 							  GL_CLAMP_TO_EDGE, 
 							  GL_LINEAR_MIPMAP_LINEAR,
 							  GL_LINEAR,
-							  49,
+							  336,
 							  ".jpg");
 	Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f));
     Video->useTextureAndNormal(true, true);

@@ -214,6 +214,10 @@ public:
 			ss << i;
 			if (i < 10)
 			{
+				fname += "00" + ss.str() + ext;
+			}
+			else if (i < 100)
+			{
 				fname += "0" + ss.str() + ext;
 			}
 			else
