@@ -765,15 +765,7 @@ LightNode* ConstructLighting(LightingShaderNode* lighting) {
   lamplight1->SetDiffuse(Color4(0.5f, 0.5f, 0.5f, 1.0f));
   lamplight1->SetSpecular(Color4(0.5f, 0.5f, 0.5f, 1.0f));
   lamplight1->SetPosition(HPoint3(0.0f, -40.0f, 38.0f, 1.0f));
-  lamplight1->SetSpotlight(Vector3(0.0f, 0.0f, 1.0f), 20.0f, 20.0f);
   lamplight1->Enable();
-
-  LightNode* lamplight2 = new LightNode(1);
-  lamplight2->SetDiffuse(Color4(0.5f, 0.5f, 0.5f, 1.0f));
-  lamplight2->SetSpecular(Color4(0.5f, 0.05f, 0.5f, 1.0f));
-  lamplight2->SetPosition(HPoint3(0.0f, -40.0f, 50.0f, 1.0f));
-  lamplight2->SetSpotlight(Vector3(0.0f, 0.0f, -1.0f), 40.0f, 55.0f);
-  lamplight2->Enable();
 
   // Light1 - directional light from the ceiling
   LightNode* light1 = new LightNode(2);
@@ -784,8 +776,7 @@ LightNode* ConstructLighting(LightingShaderNode* lighting) {
 
   // Lights are children of the camera node
   MyCamera->AddChild(lamplight1);
-  lamplight1->AddChild(lamplight2);
-  lamplight2->AddChild(light1);
+  lamplight1->AddChild(light1);
 
   return light1;
 }

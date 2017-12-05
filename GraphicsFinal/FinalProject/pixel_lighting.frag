@@ -62,6 +62,34 @@ float calculateAttenuation(in int i, in float distance)
                 (lights[i].quadraticAttenuation * distance * distance)));
 }
 
+vec4 calcDiscreteIntensity(in int i, in float intensity)
+{
+	vec3 color;
+
+    if(intensity > 0.8)
+	{
+        color = vec3(1.0f, 1.0f, 1.0f);
+    }
+	else if(intensity > 0.6)
+	{
+        color = vec3(0.8f, 0.8f, 0.8f);
+    }
+	else if(intensity > 0.4)
+	{
+        color = vec3(0.6f, 0.6f, 0.6f);
+    }
+	else if(intensity > 0.2)
+	{
+        color = vec3(0.4f, 0.4f, 0.4f);
+    }
+	else
+	{
+        color = vec3(0.0f, 0.0f, 0.0f);
+    }
+
+	return vec4(color, lights[i].diffuse.a);
+}
+
 // Convenience method to compute the ambient, diffuse, and specular
 // contribution of directional light source i
 void directionalLight(in int i, in vec3 N, in vec3 vtx, in vec3 V, inout vec4 ambient, 
@@ -115,7 +143,8 @@ void pointLight(in int i, in vec3 N, in vec3 vtx, in vec3 V, inout vec4 ambient,
    if (nDotL > 0.0)
    {
       // Add diffuse contribution of this light source
-      diffuse += lights[i].diffuse  * attenuation * nDotL;
+      //diffuse += lights[i].diffuse  * attenuation * nDotL;
+      diffuse += calcDiscreteIntensity(i, nDotL) * attenuation;
       
       // Construct the halfway vector and add specular contribution (if N dot H > 0)
       vec3 H = normalize(L + V);
@@ -151,7 +180,8 @@ void spotLight(in int i, in vec3 N, in vec3 vtx, in vec3 V, inout vec4 ambient,
          attenuation *= pow(spotEffect, lights[i].spotExponent);
             
          // Add diffuse contribution of this light source
-         diffuse += lights[i].diffuse  * attenuation * nDotL;
+         //diffuse += lights[i].diffuse  * attenuation * nDotL;
+         diffuse += calcDiscreteIntensity(i, nDotL) * attenuation;
 
          // Construct the halfway vector and add specular contribution (if N dot H > 0)
          vec3 H = normalize(L + V);
@@ -195,9 +225,10 @@ void main()
 	vec4 ambient  = vec4(0.0);
 	vec4 diffuse  = vec4(0.0);
 	vec4 specular = vec4(0.0);
-	for (int i = 0; i < numLights; i++)
+	
+	for(int i = 0; i < numLights; i++)
 	{
-		if (lights[i].enabled != 1)
+		if(lights[i].enabled != 1)
 			continue;
 
 		if (lights[i].position.w == 0.0)
@@ -211,21 +242,26 @@ void main()
 	// Compute color. Emmission + global ambient contribution + light sources ambient, diffuse,
 	// and specular contributions
 	vec4 color = materialEmission + globalLightAmbient * materialAmbient +
-			(ambient  * materialAmbient) + (diffuse  * materialDiffuse) + (specular * materialSpecular);
-     
+                 (ambient  * materialAmbient) + (diffuse  * materialDiffuse) + (specular * materialSpecular);
+    
     if(useTexture == 1)
     {
         // If a texture is bound, get its texel and modulate lighting and texture color
 		vec4 texel = texture2D(texImage, texture * textureScale);
 		color = vec4(color.rgb * texel.rgb, color.a * texel.a);
+		
 		if(texture[0] <= 0.025 || texture[0] >= 0.975)
-				color = vec4(0,0,0,0);
+			color = vec4(0.0);
+
 		if(texture[1]  <= 0.05 || texture[1] >= 0.975)
-				color = vec4(0,0,0,0);
-	}		
-			if(texture[0] <= 0.025 || texture[0] >= 0.975)
-				color = vec4(0,0,0,0);
-		if(texture[1]  <= 0.05 || texture[1] >= 0.975)
-				color = vec4(0,0,0,0);
+			color = vec4(0.0);
+	}
+	
+	if(texture[0] <= 0.025 || texture[0] >= 0.975)
+		color = vec4(0.0);
+	
+	if(texture[1]  <= 0.05 || texture[1] >= 0.975)
+		color = vec4(0.0);
+
 	fragColor = clamp(color, 0.0, 1.0);
 }
