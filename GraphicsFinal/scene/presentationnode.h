@@ -57,8 +57,11 @@ public:
         node_type = SCENE_PRESENTATION;
         reference_count = 0;
 
-        texture_id = 0;       // Default to no texture
+        useTexture = 0;
         textureScale = 1.0f;  // Default texture scale to normal size
+        texture_id = 0;       // Default to no texture
+        
+        useNormalMap = 0;
         normalMapID = 0;      // Default to no normal map
     }
 
@@ -381,6 +384,17 @@ public:
         textureScale = scale;
     }
 
+    /**
+     * Sets whether the texture and normal map should be used or not
+     * @param  useTextureFlag    Flag denoting whether to use textures or not
+     * @param  useNormalMapFlag  Flag denoting whether to use normal maps or not
+     */
+    void useTextureAndNormal(int useTextureFlag, int useNormalMapFlag)
+    {
+        useTexture = useTextureFlag;
+        useNormalMap = useNormalMapFlag;
+    }
+
 	/**
 	 * Draw. Sets the material properties.
 	 * @param  scene_state  Scene state (holds material uniform locations)
@@ -395,7 +409,7 @@ public:
 
 		// Enable texture mapping and bind the texture
 		if (texture_id) {
-            glUniform1i(scene_state.usetexture_loc, 1);   // Tell shader we are using textures
+            glUniform1i(scene_state.usetexture_loc, useTexture);      // Tell shader we are using textures
             glUniform1f(scene_state.texturescale_loc, textureScale);
 
 			glUniform1i(scene_state.textureunit_loc, 0);  // Texture unit 0
@@ -410,8 +424,8 @@ public:
 		// Enable normal mapping and bind the texture
 		if (normalMapID)
 		{
-			glUniform1i(scene_state.usenormalmap_loc, 1);   // Tell shader we are using normal maps
-			glUniform1i(scene_state.normalmap_loc, 1);      // Texture unit 1
+			glUniform1i(scene_state.usenormalmap_loc, useNormalMap);  // Tell shader we are using normal maps
+			glUniform1i(scene_state.normalmap_loc, 1);                // Texture unit 1
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, normalMapID);
 		}
@@ -468,10 +482,13 @@ protected:
 	Color4  material_emission;
 	GLfloat material_shininess;
 
+    int useTexture;
+    float textureScale;
 	std::vector<GLuint> texture_ids;
 	GLuint texture_id;
+
+    int useNormalMap;
 	GLuint normalMapID;
-    float textureScale;
 
 	int texture_index;
 	int frames;

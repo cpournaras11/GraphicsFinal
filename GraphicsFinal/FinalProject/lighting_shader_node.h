@@ -62,6 +62,9 @@ public:
     // Populate camera position uniform location in scene state
     cameraposition_loc = glGetUniformLocation(shader_program.GetProgram(), "cameraPosition");
 
+    // Realistic lighting
+    usereallighting_loc = glGetUniformLocation(shader_program.GetProgram(), "useRealLighting");
+
     // Set the number of lights to 2 for now
     light_count = 3;
     lightcount_loc = glGetUniformLocation(shader_program.GetProgram(), "numLights");
@@ -161,6 +164,7 @@ public:
     scene_state.normalmap_loc = normalmap_loc;
 
     // Set the light locations
+    scene_state.usereallighting_loc = usereallighting_loc;
     scene_state.lightcount_loc = lightcount_loc;
     for (int i = 0; i < light_count; i++) {
       scene_state.lights[i] = lights[i];
@@ -243,6 +247,7 @@ protected:
   GLint normalmap_loc;         // Normal map unit location
   
   // Lighting uniforms
+  GLint usereallighting_loc;
   int light_count;            // Number of lights
   GLint lightcount_loc;       // Light count uniform locations
   GLint globalambient_loc;    // Global ambient uniform location

@@ -47,6 +47,20 @@ int   RenderHeight = 600;
 const float FrameRate = 72.0f;
 const float VideoFrameRate = 16.0f;
 
+int useRealistic = 0;
+
+PresentationNode* floorMaterial;
+PresentationNode* wallMaterial;
+PresentationNode* ceilMaterial;
+
+PresentationNode* chairFabric;
+PresentationNode* chairWood;
+
+PresentationNode* couchFabric;
+PresentationNode* couchWood;
+
+PresentationNode* rugMaterial;
+
 // Simple logging function
 void logmsg(const char *message, ...)
 {
@@ -174,6 +188,30 @@ void screenTimer(int value)
 }
 
 /**
+ * Toggles textures and realistic vs non realistic shading
+ */
+void toggleShaderModes()
+{
+    useRealistic = (useRealistic == 0) ? 1 : 0;
+
+    // Toggle textures and normals
+    floorMaterial->useTextureAndNormal(useRealistic, useRealistic);
+    wallMaterial->useTextureAndNormal(useRealistic, useRealistic);
+    ceilMaterial->useTextureAndNormal(useRealistic, useRealistic);
+
+    chairFabric->useTextureAndNormal(useRealistic, useRealistic);
+    chairWood->useTextureAndNormal(useRealistic, useRealistic);
+
+    couchFabric->useTextureAndNormal(useRealistic, useRealistic);
+    couchWood->useTextureAndNormal(useRealistic, useRealistic);
+
+    rugMaterial->useTextureAndNormal(useRealistic, useRealistic);
+
+    // Toggle realistic lighting
+    glUniform1i(MySceneState.usereallighting_loc, useRealistic);
+}
+
+/**
  * Keyboard callback.
  */
 void keyboard(unsigned char key, int x, int y) {
@@ -284,6 +322,10 @@ void keyboard(unsigned char key, int x, int y) {
 	   }
 	   glutPostRedisplay();
 	   break;
+   // Toggle shader modes
+   case 'd':
+       toggleShaderModes();
+       break;
   default:
     break;
   }
@@ -314,8 +356,7 @@ void reshape(int width, int height) {
  * @param  transform Transformation node.
  * @param  geometry  Geometry node.
  */
-void AddSubTree(SceneNode* parent, SceneNode* material,
-                SceneNode* transform, SceneNode* geometry) {
+void AddSubTree(SceneNode* parent, SceneNode* material, SceneNode* transform, SceneNode* geometry) {
   parent->AddChild(material);
   material->AddChild(transform);
   transform->AddChild(geometry);
@@ -327,8 +368,7 @@ void AddSubTree(SceneNode* parent, SceneNode* material,
  * @param  unit_square  Geometry node to use
  * @return Returns a scene node that describes the room.
  */
-SceneNode* ConstructRoom(UnitSquareSurface* unit_square,
-	TexturedUnitSquareSurface* textured_square) {
+SceneNode* ConstructRoom(UnitSquareSurface* unit_square, TexturedUnitSquareSurface* textured_square) {
 	// Contruct transform nodes for the walls. Perform rotations so the 
 	// walls face inwards
 	TransformNode* floor_transform = new TransformNode;
@@ -368,51 +408,51 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square,
 	ceiling_transform->Scale(200.0f, 200.0f, 1.0f);
 
 	// Use a texture for the floor
-	PresentationNode* floor_material = new PresentationNode(Color4(0.15f, 0.15f, 0.15f),
-		                                                    Color4(0.4f, 0.4f, 0.4f), 
-                                                            Color4(0.2f, 0.2f, 0.2f), 
-                                                            Color4(0.0f, 0.0f, 0.0f), 
-                                                            5.0f);
-	floor_material->SetTexture("wood-floor-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    floor_material->setNormalMap("wood-floor-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    floor_material->setTextureScale(4.0f);
+	floorMaterial = new PresentationNode(Color4(0.15f, 0.15f, 0.15f),
+		                                 Color4(0.4f, 0.4f, 0.4f), 
+                                         Color4(0.2f, 0.2f, 0.2f), 
+                                         Color4(0.0f, 0.0f, 0.0f), 
+                                         5.0f);
+    floorMaterial->SetTexture("wood-floor-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    floorMaterial->setNormalMap("wood-floor-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    floorMaterial->setTextureScale(4.0f);
 
 	// Use a texture for the walls
-	PresentationNode* wall_material = new PresentationNode(Color4(0.35f, 0.225f, 0.275f),
-		                                                   Color4(0.7f, 0.55f, 0.55f), 
-                                                           Color4(0.4f, 0.4f, 0.4f), 
-                                                           Color4(0.0f, 0.0f, 0.0f), 
-                                                           16.0f);
-    wall_material->SetTexture("masonry-wall-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    wall_material->setNormalMap("masonry-wall-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    wall_material->setTextureScale(4.0f);
+	wallMaterial = new PresentationNode(Color4(0.35f, 0.225f, 0.275f),
+		                                Color4(0.7f, 0.55f, 0.55f), 
+                                        Color4(0.4f, 0.4f, 0.4f), 
+                                        Color4(0.0f, 0.0f, 0.0f), 
+                                        16.0f);
+    wallMaterial->SetTexture("masonry-wall-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    wallMaterial->setNormalMap("masonry-wall-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    wallMaterial->setTextureScale(4.0f);
 
 	// Use a texture for the ceiling
-	PresentationNode* ceiling_material = new PresentationNode(Color4(0.75f, 0.75f, 0.75f),
-		                                                      Color4(1.0f, 1.0f, 1.0f), 
-                                                              Color4(0.9f, 0.9f, 0.9f), 
-                                                              Color4(0.0f, 0.0f, 0.0f), 
-                                                              64.0);
-    ceiling_material->SetTexture("ceiling-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    ceiling_material->setNormalMap("ceiling-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    ceiling_material->setTextureScale(8.0f);
+	ceilMaterial = new PresentationNode(Color4(0.75f, 0.75f, 0.75f),
+		                                Color4(1.0f, 1.0f, 1.0f), 
+                                        Color4(0.9f, 0.9f, 0.9f), 
+                                        Color4(0.0f, 0.0f, 0.0f), 
+                                        64.0);
+    ceilMaterial->SetTexture("ceiling-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    ceilMaterial->setNormalMap("ceiling-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    ceilMaterial->setTextureScale(8.0f);
 
 	// Walls. We can group these all under a single presentation node.
 	SceneNode* room = new SceneNode;
-	room->AddChild(wall_material);
-	wall_material->AddChild(backwall_transform);
+	room->AddChild(wallMaterial);
+    wallMaterial->AddChild(backwall_transform);
 	backwall_transform->AddChild(textured_square);
-	wall_material->AddChild(leftwall_transform);
+    wallMaterial->AddChild(leftwall_transform);
 	leftwall_transform->AddChild(textured_square);
-	wall_material->AddChild(rightwall_transform);
+    wallMaterial->AddChild(rightwall_transform);
 	rightwall_transform->AddChild(textured_square);
-	wall_material->AddChild(frontwall_transform);
+    wallMaterial->AddChild(frontwall_transform);
 	frontwall_transform->AddChild(textured_square);
 
 	// Add floor and ceiling to the parent. Use convenience method to add
 	// presentation, then transform, then geometry.
-	AddSubTree(room, floor_material, floor_transform, textured_square);
-	AddSubTree(room, ceiling_material, ceiling_transform, textured_square);
+	AddSubTree(room, floorMaterial, floor_transform, textured_square);
+	AddSubTree(room, ceilMaterial, ceiling_transform, textured_square);
 
 	return room;
 }
@@ -526,6 +566,7 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface
 							  49,
 							  ".jpg");
 	Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f));
+    Video->useTextureAndNormal(true, true);
 	glutTimerFunc(1000.0f / VideoFrameRate, screenTimer, 0);
 
 	SceneNode* tv = new SceneNode;
@@ -585,42 +626,44 @@ SceneNode* ConstructCouch(TexturedUnitSquareSurface* textured_square) {
 	back->Scale(57.0f, 6.0f, 27.0f);
 
 	// Wood material for table
-	PresentationNode* wood = new PresentationNode(Color4(0.275f, 0.225f, 0.075f),
-		Color4(0.55f, 0.45f, 0.15f), Color4(0.3f, 0.3f, 0.3f),
-		Color4(0.0f, 0.0f, 0.0f), 64.0f);
+	couchWood = new PresentationNode(Color4(0.275f, 0.225f, 0.075f),
+		                             Color4(0.55f, 0.45f, 0.15f), 
+                                     Color4(0.3f, 0.3f, 0.3f), 
+                                     Color4(0.0f, 0.0f, 0.0f), 
+                                     64.0f);
 
-	PresentationNode* fabric = new PresentationNode();
-	fabric->SetMaterialAmbient(Color4(0.2f, 0.2f, 0.2f));
-	fabric->SetMaterialDiffuse(Color4(0.5f, 0.5f, 0.5f));
-	fabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
-	fabric->SetMaterialShininess(3);
-	fabric->SetTexture("fabric-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    fabric->setNormalMap("fabric-normal.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+	couchFabric = new PresentationNode();
+    couchFabric->SetMaterialAmbient(Color4(0.2f, 0.2f, 0.2f));
+    couchFabric->SetMaterialDiffuse(Color4(0.5f, 0.5f, 0.5f));
+    couchFabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
+    couchFabric->SetMaterialShininess(3);
+    couchFabric->SetTexture("fabric-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    couchFabric->setNormalMap("fabric-normal.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
 	SceneNode* couch = new SceneNode;
 	// Add pieces of couch with fabri material
-	couch->AddChild(fabric);
-	fabric->AddChild(base);
+	couch->AddChild(couchFabric);
+    couchFabric->AddChild(base);
 	base->AddChild(box);
-	fabric->AddChild(left);
+    couchFabric->AddChild(left);
 	left->AddChild(box);
-	fabric->AddChild(right);
+    couchFabric->AddChild(right);
 	right->AddChild(box);
-	fabric->AddChild(back);
+    couchFabric->AddChild(back);
 	back->AddChild(box);
 
 	// Add legs with wood material
-	couch->AddChild(wood);
-	wood->AddChild(leg1);
+	couch->AddChild(couchWood);
+    couchWood->AddChild(leg1);
 	leg1->AddChild(box);
-	wood->AddChild(leg2);
+    couchWood->AddChild(leg2);
 	leg2->AddChild(box);
-	wood->AddChild(leg3);
+    couchWood->AddChild(leg3);
 	leg3->AddChild(box);
-	wood->AddChild(leg4);
+    couchWood->AddChild(leg4);
 	leg4->AddChild(box);
-	return couch;
 
+	return couch;
 }
 
 /**
@@ -662,41 +705,44 @@ SceneNode* ConstructChair(TexturedUnitSquareSurface* textured_square) {
 	back->Translate(0.0f, 10.5f, 18.0f);
 	back->Scale(27.0f, 6.0f, 27.0f);
 
-	// Wood material for table
-	PresentationNode* wood = new PresentationNode(Color4(0.275f, 0.225f, 0.075f),
-	Color4(0.55f, 0.45f, 0.15f), Color4(0.3f, 0.3f, 0.3f),
-	Color4(0.0f, 0.0f, 0.0f), 64.0f);
+    chairFabric = new PresentationNode();
+    chairFabric->SetMaterialAmbient(Color4(0.2f, 0.2f, 0.2f));
+    chairFabric->SetMaterialDiffuse(Color4(0.5f, 0.5f, 0.5f));
+    chairFabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
+    chairFabric->SetMaterialShininess(3);
+    chairFabric->SetTexture("fabric-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    chairFabric->setNormalMap("fabric-normal.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
-	PresentationNode* fabric = new PresentationNode();
-	fabric->SetMaterialAmbient(Color4(0.2f, 0.2f, 0.2f));
-	fabric->SetMaterialDiffuse(Color4(0.5f, 0.5f, 0.5f));
-	fabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
-	fabric->SetMaterialShininess(3);
-	fabric->SetTexture("fabric-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    fabric->setNormalMap("fabric-normal.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+	// Wood material for table
+	chairWood = new PresentationNode(Color4(0.275f, 0.225f, 0.075f),
+	                                 Color4(0.55f, 0.45f, 0.15f), 
+                                     Color4(0.3f, 0.3f, 0.3f), 
+                                     Color4(0.0f, 0.0f, 0.0f), 
+                                     64.0f);
 
 	SceneNode* chair = new SceneNode;
 	// Add pieces of couch with fabri material
-	chair->AddChild(fabric);
-	fabric->AddChild(base);
+	chair->AddChild(chairFabric);
+    chairFabric->AddChild(base);
 	base->AddChild(box);
-	fabric->AddChild(left);
+    chairFabric->AddChild(left);
 	left->AddChild(box);
-	fabric->AddChild(right);
+    chairFabric->AddChild(right);
 	right->AddChild(box);
-	fabric->AddChild(back);
+    chairFabric->AddChild(back);
 	back->AddChild(box);
 
 	// Add legs with wood material
-	chair->AddChild(wood);
-	wood->AddChild(leg1);
+	chair->AddChild(chairWood);
+    chairWood->AddChild(leg1);
 	leg1->AddChild(box);
-	wood->AddChild(leg2);
+    chairWood->AddChild(leg2);
 	leg2->AddChild(box);
-	wood->AddChild(leg3);
+    chairWood->AddChild(leg3);
 	leg3->AddChild(box);
-	wood->AddChild(leg4);
+    chairWood->AddChild(leg4);
 	leg4->AddChild(box);
+
 	return chair;
 }
 
@@ -787,9 +833,10 @@ LightNode* ConstructLighting(LightingShaderNode* lighting) {
 void ConstructScene() {
   // Shader node
   LightingShaderNode* shader = new LightingShaderNode;
-  if (!shader->Create("pixel_lighting.vert", "pixel_lighting.frag") ||
-      !shader->GetLocations())
-    exit(-1);
+  if(!shader->Create("pixel_lighting.vert", "pixel_lighting.frag") || !shader->GetLocations())
+  {
+      exit(-1);
+  }
 
   // Get the position, texture, and normal locations to use when constructing VAOs
   int position_loc  = shader->GetPositionLoc();
@@ -822,8 +869,6 @@ void ConstructScene() {
 
   // Construct the room as a child of the root node
   SceneNode* room = ConstructRoom(unit_square, textured_square);
-
-  PresentationNode* chairPres = new PresentationNode();
   
   // Construct the chair with transform
   TransformNode* chairTransform = new TransformNode();
@@ -860,11 +905,11 @@ void ConstructScene() {
   rugTransform->RotateZ(45.0f);
   rugTransform->Scale(60.0, 60.0, 1.0f);
 
-  PresentationNode* rugMaterial = new PresentationNode(Color4(0.4f, 0.4f, 0.4f), 
-                                                       Color4(0.75f, 0.75f, 0.75f), 
-                                                       Color4(0.2f, 0.2f, 0.2f), 
-                                                       Color4(0.0f, 0.0f, 0.0f), 
-                                                       5.0);
+  rugMaterial = new PresentationNode(Color4(0.4f, 0.4f, 0.4f), 
+                                     Color4(0.75f, 0.75f, 0.75f), 
+                                     Color4(0.2f, 0.2f, 0.2f), 
+                                     Color4(0.0f, 0.0f, 0.0f), 
+                                     5.0);
   rugMaterial->SetTexture("rug-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
   rugMaterial->setNormalMap("rug-normal.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
   rugMaterial->setTextureScale(2.0f);
@@ -886,16 +931,19 @@ void ConstructScene() {
   // Add the chair, couch, tv, lamp, and rug
   myscene->AddChild(chairTransform);
   chairTransform->AddChild(chair);
+
   myscene->AddChild(couchTransform);
   couchTransform->AddChild(couch);
+
   myscene->AddChild(tvTransform);
   tvTransform->AddChild(tv);
-  myscene->AddChild(rugMaterial);
+
   myscene->AddChild(lampTransform);
   lampTransform->AddChild(lamp);
+
+  myscene->AddChild(rugMaterial);
   rugMaterial->AddChild(rugTransform);
   rugTransform->AddChild(textured_square);
-  
 }
 
 /**
@@ -911,7 +959,10 @@ int main(int argc, char** argv) {
   std::cout << "Y - Slide camera up               y - Slide camera down" << std::endl;
   std::cout << "F - Move camera forward           f - Move camera backwards" << std::endl;
   std::cout << "V - Faster mouse movement         v - Slower mouse movement" << std::endl;
+  std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "t - Toggle TV Power" << std::endl;
+  std::cout << "d - Toggle textures and realistic vs non realistic shading" << std::endl;
+  std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "ESC - Exit Program" << std::endl;
   
   // Initialize free GLUT

@@ -69,6 +69,7 @@ struct SceneState {
   GLint normalmap_loc;
 
   // Lights
+  GLint usereallighting_loc;
   int    max_enabled_light;    // Index of the maximum enabled light index
   GLint  lightcount_loc;       // Number of lights uniform
   LightUniforms lights[kMaxLights]; // Array of light uniforms

@@ -25,6 +25,9 @@ uniform	sampler2D texImage;
 uniform int useNormalMap;
 uniform sampler2D normalMap;
 
+// Lighting
+uniform int useRealLighting;
+
 // Global lighting environment ambient intensity
 uniform vec4  globalLightAmbient;
 
@@ -143,8 +146,14 @@ void pointLight(in int i, in vec3 N, in vec3 vtx, in vec3 V, inout vec4 ambient,
    if (nDotL > 0.0)
    {
       // Add diffuse contribution of this light source
-      //diffuse += lights[i].diffuse  * attenuation * nDotL;
-      diffuse += calcDiscreteIntensity(i, nDotL) * attenuation;
+	  if(useRealLighting == 1)
+	  {
+		diffuse += lights[i].diffuse  * attenuation * nDotL;
+	  }
+	  else
+	  {
+		diffuse += calcDiscreteIntensity(i, nDotL) * attenuation;
+	  }
       
       // Construct the halfway vector and add specular contribution (if N dot H > 0)
       vec3 H = normalize(L + V);
@@ -180,8 +189,14 @@ void spotLight(in int i, in vec3 N, in vec3 vtx, in vec3 V, inout vec4 ambient,
          attenuation *= pow(spotEffect, lights[i].spotExponent);
             
          // Add diffuse contribution of this light source
-         //diffuse += lights[i].diffuse  * attenuation * nDotL;
-         diffuse += calcDiscreteIntensity(i, nDotL) * attenuation;
+	     if(useRealLighting == 1)
+		 {
+			diffuse += lights[i].diffuse  * attenuation * nDotL;
+		 }
+		 else
+		 {
+			diffuse += calcDiscreteIntensity(i, nDotL) * attenuation;
+		 }
 
          // Construct the halfway vector and add specular contribution (if N dot H > 0)
          vec3 H = normalize(L + V);
