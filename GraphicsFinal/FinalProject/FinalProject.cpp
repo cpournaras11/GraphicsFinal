@@ -28,6 +28,7 @@
 
 // Root of the scene graph and scene state
 SceneNode* SceneRoot;
+SceneNode* tvNode;
 SceneState MySceneState;
 
 // Global camera node (so we can change view)
@@ -106,8 +107,37 @@ void display() {
 	// Clear the framebuffer and the depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Init scene state and draw the scene graph
+    // Fill the stencil buffer for the TV
+    glEnable(GL_STENCIL_TEST);
+    glClearStencil(0);
+    glClear(GL_STENCIL_BUFFER_BIT);
+
+    glStencilFunc(GL_NEVER, 1, 1);
+    glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+
+    MySceneState.Init();
+    tvNode->Draw(MySceneState);
+
+    glStencilFunc(GL_EQUAL, 1, 1);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+    // Draw the reflected scene
+    glFrontFace(GL_CW);
+
+    MySceneState.Init();
+
+    MySceneState.model_matrix.Translate(0.0f, 200.0f, 0.0f);
+    MySceneState.model_matrix.Scale(1.0f, -1.0f, 1.0f);
+
+    SceneRoot->Draw(MySceneState);
+
+	// Draw the scene as normal
+    glDisable(GL_STENCIL_TEST);
+    glFrontFace(GL_CCW);
+
 	MySceneState.Init();
+    //TODO: Uncomment when ready
+    //tvNode->Draw(MySceneState);
 	SceneRoot->Draw(MySceneState);
 
 	// Swap buffers
@@ -464,8 +494,9 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square, TexturedUnitSquareSurfa
 	// Walls. We can group these all under a single presentation node.
 	SceneNode* room = new SceneNode;
 	room->AddChild(wallMaterial);
-	wallMaterial->AddChild(backwall_transform);
-	backwall_transform->AddChild(textured_square);
+    //TODO: Uncomment when ready
+	//wallMaterial->AddChild(backwall_transform);
+	//backwall_transform->AddChild(textured_square);
 	wallMaterial->AddChild(leftwall_transform);
 	leftwall_transform->AddChild(textured_square);
 	wallMaterial->AddChild(rightwall_transform);
@@ -964,15 +995,16 @@ void ConstructScene() {
 	myscene->AddChild(couchTransform);
 	couchTransform->AddChild(couch);
 
-	myscene->AddChild(tvTransform);
-	tvTransform->AddChild(tv);
-
 	myscene->AddChild(lampTransform);
 	lampTransform->AddChild(lamp);
 
 	myscene->AddChild(rugMaterial);
 	rugMaterial->AddChild(rugTransform);
 	rugTransform->AddChild(textured_square);
+
+    tvNode = new SceneNode();
+    tvNode->AddChild(tvTransform);
+    tvTransform->AddChild(tv);
 }
 
 /**
