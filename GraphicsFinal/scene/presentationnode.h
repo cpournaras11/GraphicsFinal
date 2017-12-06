@@ -115,8 +115,6 @@ public:
 		material_shininess = s;
 	}
 
-
-
 	/**
 	 * Set the texture to used for the material.
 	 * @param  fname  Texture image filename
