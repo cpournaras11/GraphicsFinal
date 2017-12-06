@@ -60,6 +60,9 @@ PresentationNode* chairWood;
 PresentationNode* couchFabric;
 PresentationNode* couchWood;
 
+PresentationNode* metal;
+PresentationNode* shadeMaterial;
+
 PresentationNode* rugMaterial;
 
 // Simple logging function
@@ -206,7 +209,10 @@ void toggleShaderModes()
 	couchFabric->useTextureAndNormal(useRealistic, useRealistic);
 	couchWood->useTextureAndNormal(useRealistic, useRealistic);
 
-	rugMaterial->useTextureAndNormal(useRealistic, useRealistic);
+    shadeMaterial->useTextureAndNormal(useRealistic, useRealistic);
+    metal->useTextureAndNormal(useRealistic, useRealistic);
+
+    rugMaterial->useTextureAndNormal(useRealistic, useRealistic);
 
 	// Toggle realistic lighting
 	glUniform1i(MySceneState.usereallighting_loc, useRealistic);
@@ -643,20 +649,21 @@ SceneNode* ConstructCouch(TexturedUnitSquareSurface* textured_square) {
 	back->Translate(0.0f, 10.5f, 18.0f);
 	back->Scale(57.0f, 6.0f, 27.0f);
 
+    couchFabric = new PresentationNode();
+    couchFabric->SetMaterialAmbient(Color4(0.1f, 0.0f, 0.2f));
+    couchFabric->SetMaterialDiffuse(Color4(0.2f, 0.0f, 0.4f));
+    couchFabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
+    couchFabric->SetMaterialShininess(3);
+    couchFabric->SetTexture("fabric-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    couchFabric->setNormalMap("fabric-normal.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+
 	// Wood material for table
 	couchWood = new PresentationNode(Color4(0.275f, 0.225f, 0.075f),
-		Color4(0.55f, 0.45f, 0.15f),
-		Color4(0.3f, 0.3f, 0.3f),
-		Color4(0.0f, 0.0f, 0.0f),
-		64.0f);
-
-	couchFabric = new PresentationNode();
-	couchFabric->SetMaterialAmbient(Color4(0.2f, 0.2f, 0.2f));
-	couchFabric->SetMaterialDiffuse(Color4(0.5f, 0.5f, 0.5f));
-	couchFabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
-	couchFabric->SetMaterialShininess(3);
-	couchFabric->SetTexture("fabric-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-	couchFabric->setNormalMap("fabric-normal.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+									 Color4(0.55f, 0.45f, 0.15f), 
+									 Color4(0.3f, 0.3f, 0.3f), 
+									 Color4(0.0f, 0.0f, 0.0f), 
+									 64.0f);
+    couchWood->SetTexture("grainy-wood-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
 	SceneNode* couch = new SceneNode;
 	// Add pieces of couch with fabri material
@@ -724,8 +731,8 @@ SceneNode* ConstructChair(TexturedUnitSquareSurface* textured_square) {
 	back->Scale(27.0f, 6.0f, 27.0f);
 
 	chairFabric = new PresentationNode();
-	chairFabric->SetMaterialAmbient(Color4(0.2f, 0.2f, 0.2f));
-	chairFabric->SetMaterialDiffuse(Color4(0.5f, 0.5f, 0.5f));
+	chairFabric->SetMaterialAmbient(Color4(0.1f, 0.0f, 0.2f));
+	chairFabric->SetMaterialDiffuse(Color4(0.2f, 0.0f, 0.4f));
 	chairFabric->SetMaterialSpecular(Color4(0.6f, 0.6f, 0.6f));
 	chairFabric->SetMaterialShininess(3);
 	chairFabric->SetTexture("fabric-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
@@ -733,10 +740,11 @@ SceneNode* ConstructChair(TexturedUnitSquareSurface* textured_square) {
 
 	// Wood material for table
 	chairWood = new PresentationNode(Color4(0.275f, 0.225f, 0.075f),
-		Color4(0.55f, 0.45f, 0.15f),
-		Color4(0.3f, 0.3f, 0.3f),
-		Color4(0.0f, 0.0f, 0.0f),
-		64.0f);
+									 Color4(0.55f, 0.45f, 0.15f),
+									 Color4(0.3f, 0.3f, 0.3f),
+									 Color4(0.0f, 0.0f, 0.0f),
+									 64.0f);
+	chairWood->SetTexture("grainy-wood-texture.jpg", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
 	SceneNode* chair = new SceneNode;
 	// Add pieces of couch with fabri material
@@ -766,8 +774,8 @@ SceneNode* ConstructChair(TexturedUnitSquareSurface* textured_square) {
 
 SceneNode* ConstructLamp(int position_loc, int normal_loc, int texture_loc, int tangent_loc, int bitangent_loc)
 {
-	TexturedConicSurface* base = new TexturedConicSurface(7.0f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
-	TexturedConicSurface* post = new TexturedConicSurface(0.5f, 0.5f, 20, 36, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
+	TexturedConicSurface* base = new TexturedConicSurface(7.0f, 0.5f, 20, 4, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
+	TexturedConicSurface* post = new TexturedConicSurface(0.5f, 0.5f, 20, 20, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
 	TexturedSphereSection* cap = new TexturedSphereSection(0.0f, 360.0f, 36, 0.0f, 360.0f, 18, 0.5f, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
 	TexturedTroughSurface* shade = new TexturedTroughSurface(20, 20, position_loc, normal_loc, texture_loc, tangent_loc, bitangent_loc);
 
@@ -786,27 +794,30 @@ SceneNode* ConstructLamp(int position_loc, int normal_loc, int texture_loc, int 
 	shadeTransform->Translate(0.0f, 0.0f, 39.5f);
 	shadeTransform->Scale(5.0f, 5.0f, 20.0f);
 
-	PresentationNode* metal = new PresentationNode;
-	metal->SetMaterialAmbient(Color4(0.05375f, 0.05f, 0.06625f));
-	metal->SetMaterialDiffuse(Color4(0.18275f, 0.17f, 0.22525f));
-	metal->SetMaterialSpecular(Color4(0.332741f, 0.328634f, 0.346435f));
-	metal->SetMaterialShininess(30.0f);
+	metal = new PresentationNode(Color4(0.15f, 0.15f, 0.2f), 
+                                 Color4(0.3f, 0.3f, 0.4f), 
+                                 Color4(0.2f, 0.2f, 0.2f), 
+                                 Color4(0.0f, 0.0f, 0.0f), 
+                                 15.0f);
 
-	PresentationNode* shadeMaterial = new PresentationNode;
-	shadeMaterial->SetMaterialAmbient(Color4(0.19225f, 0.19225f, 0.19225f));
-	shadeMaterial->SetMaterialDiffuse(Color4(0.50754f, 0.50754f, 0.50754f));
-	shadeMaterial->SetMaterialSpecular(Color4(0.508273f, 0.508273f, 0.508273f));
-	shadeMaterial->SetMaterialEmission(Color4(0.7f, 0.7f, 0.7f));
-	shadeMaterial->SetMaterialShininess(1.0f);
+	shadeMaterial = new PresentationNode(Color4(0.4f, 0.4f, 0.2f),
+                                         Color4(0.8f, 0.8f, 0.4f), 
+                                         Color4(0.3f, 0.3f, 0.3f), 
+                                         Color4(0.2f, 0.2f, 0.2f), 
+                                         5.0f);
+    shadeMaterial->SetTexture("lampshade-texture.jpg", GL_REPEAT, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
 	SceneNode* lamp = new SceneNode;
 	lamp->AddChild(metal);
 	metal->AddChild(baseTransform);
 	baseTransform->AddChild(base);
+
 	metal->AddChild(postTransform);
 	postTransform->AddChild(post);
+
 	metal->AddChild(capTransform);
 	capTransform->AddChild(cap);
+
 	lamp->AddChild(shadeMaterial);
 	shadeMaterial->AddChild(shadeTransform);
 	shadeTransform->AddChild(shade);
