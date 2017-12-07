@@ -73,6 +73,11 @@ public:
 		specular = c;
 	}
 	
+    HPoint3 getPosition()
+    {
+        return position;
+    }
+
 	/**
 	 * Set the light position. Uses a homogeneous coordinate. If w = 0 the light is 
 	 * directional. Position is set within the Draw method.

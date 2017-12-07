@@ -34,6 +34,9 @@ SceneState MySceneState;
 // Global camera node (so we can change view)
 CameraNode* MyCamera;
 
+// Lamp light
+LightNode* lamplight1;
+
 // Animated presentation node (global so we can toggle the tv power)
 PresentationNode* Video;
 
@@ -127,6 +130,9 @@ void display() {
     MySceneState.model_matrix.Translate(0.0f, 200.0f, 0.0f);
     MySceneState.model_matrix.Scale(1.0f, -1.0f, 1.0f);
 
+    HPoint3 lampLightPos = lamplight1->getPosition();
+    lamplight1->SetPosition(MySceneState.model_matrix * lampLightPos);
+
     SceneRoot->Draw(MySceneState);
 
 	// Draw the scene as normal
@@ -134,6 +140,9 @@ void display() {
     glFrontFace(GL_CCW);
 
 	MySceneState.Init();
+
+    lamplight1->SetPosition(lampLightPos);
+
     tvNode->Draw(MySceneState);
 	SceneRoot->Draw(MySceneState);
 
@@ -357,7 +366,7 @@ void keyboard(unsigned char key, int x, int y) {
 		break;
 
 	// Toggle tv on/off
-	case 't':
+	case '1':
 		Video->TogglePower();
 		if (Video->GetPoweredOn())
 		{
@@ -367,13 +376,13 @@ void keyboard(unsigned char key, int x, int y) {
 		break;
 
 	// Toggle shader modes
-	case 'd':
+	case '2':
 		toggleShaderModes();
 		glutPostRedisplay();
 		break;
 
 	//toggle outlines
-	case 'o':
+	case '3':
 		toggleOutlines();
 		glutPostRedisplay();
 		break;
@@ -599,9 +608,9 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface
     plastic->SetMaterialShininess(75.0f);
 
 	Video = new PresentationNode();
-    Video->SetMaterialAmbient(Color4(0.9f, 0.9f, 0.9f, 0.975f));
-    Video->SetMaterialDiffuse(Color4(1.0f, 1.0f, 1.0f, 0.975f));
-    Video->SetMaterialSpecular(Color4(0.4f, 0.4f, 0.4f, 0.975f));
+    Video->SetMaterialAmbient(Color4(0.9f, 0.9f, 0.9f, 0.9f));
+    Video->SetMaterialDiffuse(Color4(1.0f, 1.0f, 1.0f, 0.9f));
+    Video->SetMaterialSpecular(Color4(0.4f, 0.4f, 0.4f, 0.9f));
     //Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f, 0.75f));
     Video->SetMaterialShininess(15.0f);
 	Video->SetAnimatedTexture("Video/futurama00",
@@ -858,7 +867,7 @@ LightNode* ConstructLighting(LightingShaderNode* lighting) {
 	lighting->SetGlobalAmbient(globalAmbient);
 
 	// Light 0 - point light source in back right corner
-	LightNode* lamplight1 = new LightNode(0);
+	lamplight1 = new LightNode(0);
 	lamplight1->SetDiffuse(Color4(0.5f, 0.5f, 0.5f, 1.0f));
 	lamplight1->SetSpecular(Color4(0.5f, 0.5f, 0.5f, 1.0f));
 	lamplight1->SetPosition(HPoint3(0.0f, -40.0f, 38.0f, 1.0f));
@@ -1012,9 +1021,9 @@ int main(int argc, char** argv) {
 	std::cout << "F - Move camera forward           f - Move camera backwards" << std::endl;
 	std::cout << "V - Faster mouse movement         v - Slower mouse movement" << std::endl;
 	std::cout << "-----------------------------------------------------------" << std::endl;
-	std::cout << "t - Toggle TV Power" << std::endl;
-	std::cout << "d - Toggle textures and realistic vs non realistic shading" << std::endl;
-	std::cout << "o - Toggle outlines" << std::endl;
+	std::cout << "1 - Toggle TV Power" << std::endl;
+	std::cout << "2 - Toggle textures and realistic vs non realistic shading" << std::endl;
+	std::cout << "3 - Toggle outlines" << std::endl;
 	std::cout << "-----------------------------------------------------------" << std::endl;
 	std::cout << "ESC - Exit Program" << std::endl;
 

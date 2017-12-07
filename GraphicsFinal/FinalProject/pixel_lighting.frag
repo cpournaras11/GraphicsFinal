@@ -270,20 +270,20 @@ void main()
 		if(outlineEnable == 1)
 		{
 				if(texture[0] <= 0.025 || texture[0] >= 0.975)
-					color = vec4(0.0);
+					color = vec4(0.0, 0.0, 0.0, 1.0);
 
 				if(texture[1]  <= 0.025 || texture[1] >= 0.975)
-					color = vec4(0.0);
+					color = vec4(0.0, 0.0, 0.0, 1.0);
 		}
 	}
 	    
   if(outlineEnable == 1)
   {
 	if(texture[0] <= 0.025 || texture[0] >= 0.975)
-		color = vec4(0.0);
+		color = vec4(0.0, 0.0, 0.0, 1.0);
 	
 	if(texture[1]  <= 0.025 || texture[1] >= 0.975)
-		color = vec4(0.0);
+		color = vec4(0.0, 0.0, 0.0, 1.0);
 	}
 	fragColor = clamp(color, 0.0, 1.0);
 }
