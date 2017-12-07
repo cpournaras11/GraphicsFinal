@@ -53,6 +53,7 @@ const float VideoFrameRate = 21.0f;
 
 int useRealistic = 0;
 bool useOutline = 0;
+int useBumpMap = 0;
 
 PresentationNode* floorMaterial;
 PresentationNode* wallMaterial;
@@ -235,23 +236,46 @@ void toggleShaderModes()
 	useRealistic = (useRealistic == 0) ? 1 : 0;
 
 	// Toggle textures and normals
-	floorMaterial->useTextureAndNormal(useRealistic, useRealistic);
-	wallMaterial->useTextureAndNormal(useRealistic, useRealistic);
-	ceilMaterial->useTextureAndNormal(useRealistic, useRealistic);
+	floorMaterial->useTextureAndNormal(useRealistic, useBumpMap);
+	wallMaterial->useTextureAndNormal(useRealistic, useBumpMap);
+	ceilMaterial->useTextureAndNormal(useRealistic, useBumpMap);
 
-	chairFabric->useTextureAndNormal(useRealistic, useRealistic);
-	chairWood->useTextureAndNormal(useRealistic, useRealistic);
+	chairFabric->useTextureAndNormal(useRealistic, useBumpMap);
+	chairWood->useTextureAndNormal(useRealistic, useBumpMap);
 
-	couchFabric->useTextureAndNormal(useRealistic, useRealistic);
-	couchWood->useTextureAndNormal(useRealistic, useRealistic);
+	couchFabric->useTextureAndNormal(useRealistic, useBumpMap);
+	couchWood->useTextureAndNormal(useRealistic, useBumpMap);
 
-    shadeMaterial->useTextureAndNormal(useRealistic, useRealistic);
-    metal->useTextureAndNormal(useRealistic, useRealistic);
+    shadeMaterial->useTextureAndNormal(useRealistic, useBumpMap);
+    metal->useTextureAndNormal(useRealistic, useBumpMap);
 
-    rugMaterial->useTextureAndNormal(useRealistic, useRealistic);
+    rugMaterial->useTextureAndNormal(useRealistic, useBumpMap);
 
 	// Toggle realistic lighting
 	glUniform1i(MySceneState.usereallighting_loc, useRealistic);
+}
+void toggleNormalMapModes()
+{
+		useBumpMap = (useBumpMap == 0) ? 1 : 0;
+
+		// Toggle textures and normals
+		floorMaterial->useTextureAndNormal(useRealistic, useBumpMap);
+		wallMaterial->useTextureAndNormal(useRealistic, useBumpMap);
+		ceilMaterial->useTextureAndNormal(useRealistic, useBumpMap);
+
+		chairFabric->useTextureAndNormal(useRealistic, useBumpMap);
+		chairWood->useTextureAndNormal(useRealistic, useBumpMap);
+
+		couchFabric->useTextureAndNormal(useRealistic, useBumpMap);
+		couchWood->useTextureAndNormal(useRealistic, useBumpMap);
+
+		shadeMaterial->useTextureAndNormal(useRealistic, useBumpMap);
+		metal->useTextureAndNormal(useRealistic, useBumpMap);
+
+		rugMaterial->useTextureAndNormal(useRealistic, useBumpMap);
+
+		// Toggle realistic lighting
+		glUniform1i(MySceneState.usenormalmap_loc, useBumpMap);
 }
 
 /**
@@ -386,6 +410,9 @@ void keyboard(unsigned char key, int x, int y) {
 		toggleOutlines();
 		glutPostRedisplay();
 		break;
+	case '4':
+			toggleNormalMapModes();
+			glutPostRedisplay();
 	default:
 		break;
 	}
@@ -611,7 +638,7 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface
     Video->SetMaterialAmbient(Color4(0.9f, 0.9f, 0.9f, 0.9f));
     Video->SetMaterialDiffuse(Color4(1.0f, 1.0f, 1.0f, 0.9f));
     Video->SetMaterialSpecular(Color4(0.4f, 0.4f, 0.4f, 0.9f));
-    //Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f, 0.75f));
+    Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f, 0.75f));
     Video->SetMaterialShininess(15.0f);
 	Video->SetAnimatedTexture("Video/futurama00",
 		GL_CLAMP_TO_EDGE,
@@ -1024,6 +1051,7 @@ int main(int argc, char** argv) {
 	std::cout << "1 - Toggle TV Power" << std::endl;
 	std::cout << "2 - Toggle textures and realistic vs non realistic shading" << std::endl;
 	std::cout << "3 - Toggle outlines" << std::endl;
+	std::cout << "4 - Toggle normal bump map" << std::endl;
 	std::cout << "-----------------------------------------------------------" << std::endl;
 	std::cout << "ESC - Exit Program" << std::endl;
 
