@@ -109,6 +109,9 @@ void display() {
 	// Clear the framebuffer and the depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // Combine what is to be rendered with what's already in the color buffers.
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
     // Fill the stencil buffer for the TV
     glEnable(GL_STENCIL_TEST);
     glClearStencil(0);
@@ -254,6 +257,7 @@ void toggleShaderModes()
 	// Toggle realistic lighting
 	glUniform1i(MySceneState.usereallighting_loc, useRealistic);
 }
+
 void toggleNormalMapModes()
 {
 		useBumpMap = (useBumpMap == 0) ? 1 : 0;
@@ -638,7 +642,7 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface
     Video->SetMaterialAmbient(Color4(0.9f, 0.9f, 0.9f, 0.9f));
     Video->SetMaterialDiffuse(Color4(1.0f, 1.0f, 1.0f, 0.9f));
     Video->SetMaterialSpecular(Color4(0.4f, 0.4f, 0.4f, 0.9f));
-    Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f, 0.75f));
+    //Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f, 0.75f));
     Video->SetMaterialShininess(15.0f);
 	Video->SetAnimatedTexture("Video/futurama00",
 		GL_CLAMP_TO_EDGE,
@@ -1103,9 +1107,6 @@ int main(int argc, char** argv) {
 
     // Turn on blending
     glEnable(GL_BLEND);
-
-    // Combine what is to be rendered with what's already in the color buffers.
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Enable back face polygon removal
 	glFrontFace(GL_CCW);
