@@ -91,10 +91,8 @@ void logmsg(const char *message, ...)
  */
 void UpdateView(const int x, const int y, bool forward) {
 	// Find relative dx and dy relative to center of the window
-	float dx = 4.0f * ((x - (static_cast<float>(RenderWidth * 0.5f))) /
-		static_cast<float>(RenderWidth));
-	float dy = 4.0f * (((static_cast<float>(RenderHeight * 0.5f) - y)) /
-		static_cast<float>(RenderHeight));
+	float dx = 4.0f * ((x - (static_cast<float>(RenderWidth * 0.5f))) / static_cast<float>(RenderWidth));
+	float dy = 4.0f * (((static_cast<float>(RenderHeight * 0.5f) - y)) / static_cast<float>(RenderHeight));
 	float dz = (forward) ? Velocity : -Velocity;
 	MyCamera->MoveAndTurn(dx * Velocity, dy * Velocity, dz);
 	glutPostRedisplay();
@@ -136,8 +134,7 @@ void display() {
     glFrontFace(GL_CCW);
 
 	MySceneState.Init();
-    //TODO: Uncomment when ready
-    //tvNode->Draw(MySceneState);
+    tvNode->Draw(MySceneState);
 	SceneRoot->Draw(MySceneState);
 
 	// Swap buffers
@@ -494,9 +491,8 @@ SceneNode* ConstructRoom(UnitSquareSurface* unit_square, TexturedUnitSquareSurfa
 	// Walls. We can group these all under a single presentation node.
 	SceneNode* room = new SceneNode;
 	room->AddChild(wallMaterial);
-    //TODO: Uncomment when ready
-	//wallMaterial->AddChild(backwall_transform);
-	//backwall_transform->AddChild(textured_square);
+	wallMaterial->AddChild(backwall_transform);
+	backwall_transform->AddChild(textured_square);
 	wallMaterial->AddChild(leftwall_transform);
 	leftwall_transform->AddChild(textured_square);
 	wallMaterial->AddChild(rightwall_transform);
@@ -574,45 +570,40 @@ SceneNode* ConstructUnitBox(TexturedUnitSquareSurface* textured_square) {
 SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface* textured_square) {
 	SceneNode* box = ConstructUnitBox(textured_square);
 
-	// Create a box behind the tv as a mount
-	TransformNode* mount = new TransformNode;
-	mount->Translate(0.0f, 1.0f, 14.5f);
-	mount->Scale(3.0f, 1.0f, 3.0f);
-
-	// Create the back of the tv
-	TransformNode* back = new TransformNode;
-	back->Translate(0.0f, 0.0f, 14.5f);
-	back->Scale(50.0f, 1.0f, 29.0f);
-
 	// Create bezels around the screen
 	TransformNode* left = new TransformNode;
 	left->Translate(-24.5f, -1.0f, 14.5f);
-	left->Scale(1.0f, 1.0f, 29.0f);
+	left->Scale(1.0f, 2.0f, 29.0f);
 
 	TransformNode* right = new TransformNode;
 	right->Translate(24.5f, -1.0f, 14.5f);
-	right->Scale(1.0f, 1.0f, 29.0f);
+	right->Scale(1.0f, 2.0f, 29.0f);
 
 	TransformNode* top = new TransformNode;
 	top->Translate(0.0f, -1.0f, 28.5f);
-	top->Scale(48.0f, 1.0f, 1.0f);
+	top->Scale(48.0f, 2.0f, 1.0f);
 
 	TransformNode* bottom = new TransformNode;
 	bottom->Translate(0.0f, -1.0f, 0.5f);
-	bottom->Scale(48.0f, 1.0f, 1.0f);
+	bottom->Scale(48.0f, 2.0f, 1.0f);
 
 	TransformNode* screen = new TransformNode;
 	screen->Translate(0.0f, -0.85f, 14.5f);
 	screen->RotateX(90.0f);
 	screen->Scale(48.0f, 27.0f, 0.0f);
 
-	PresentationNode* plastic = new PresentationNode();
-	plastic->SetMaterialAmbient(Color4(0.0f, 0.0f, 0.0f));
-	plastic->SetMaterialDiffuse(Color4(0.2f, 0.2f, 0.2f));
-	plastic->SetMaterialSpecular(Color4(0.5f, 0.5f, 0.5f));
-	plastic->SetMaterialShininess(75.0f);
+    PresentationNode* plastic = new PresentationNode();
+    plastic->SetMaterialAmbient(Color4(0.0f, 0.0f, 0.0f, 1.0f));
+    plastic->SetMaterialDiffuse(Color4(0.2f, 0.2f, 0.2f, 1.0f));
+    plastic->SetMaterialSpecular(Color4(0.5f, 0.5f, 0.5f, 1.0f));
+    plastic->SetMaterialShininess(75.0f);
 
 	Video = new PresentationNode();
+    Video->SetMaterialAmbient(Color4(0.9f, 0.9f, 0.9f, 0.975f));
+    Video->SetMaterialDiffuse(Color4(1.0f, 1.0f, 1.0f, 0.975f));
+    Video->SetMaterialSpecular(Color4(0.4f, 0.4f, 0.4f, 0.975f));
+    //Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f, 0.75f));
+    Video->SetMaterialShininess(15.0f);
 	Video->SetAnimatedTexture("Video/futurama00",
 		GL_CLAMP_TO_EDGE,
 		GL_CLAMP_TO_EDGE,
@@ -620,24 +611,24 @@ SceneNode* ConstructTV(UnitSquareSurface* unit_square, TexturedUnitSquareSurface
 		GL_LINEAR,
 		336,
 		".jpg");
-	Video->SetMaterialEmission(Color4(1.0f, 1.0f, 1.0f));
 	Video->useTextureAndNormal(true, true);
 	glutTimerFunc(1000.0f / VideoFrameRate, screenTimer, 0);
 
 	SceneNode* tv = new SceneNode;
-	tv->AddChild(plastic);
-	plastic->AddChild(mount);
-	mount->AddChild(box);
-	plastic->AddChild(back);
-	back->AddChild(box);
-	plastic->AddChild(left);
+
+    tv->AddChild(plastic);
+    plastic->AddChild(left);
 	left->AddChild(box);
-	plastic->AddChild(right);
+
+    plastic->AddChild(right);
 	right->AddChild(box);
-	plastic->AddChild(top);
+
+    plastic->AddChild(top);
 	top->AddChild(box);
-	plastic->AddChild(bottom);
+
+    plastic->AddChild(bottom);
 	bottom->AddChild(box);
+
 	tv->AddChild(Video);
 	Video->AddChild(screen);
 	screen->AddChild(textured_square);
@@ -910,8 +901,8 @@ void ConstructScene() {
 	MyCamera = new CameraNode();
 	MyCamera->SetPosition(Point3(0.0f, -100.0f, 60.0f));
 	MyCamera->SetLookAtPt(Point3(0.0f, 0.0f, 35.0f));
-	MyCamera->SetViewUp(Vector3(0.0, 0.0, 1.0));
-	MyCamera->SetPerspective(50.0, 1.0, 1.0, 300.0);
+	MyCamera->SetViewUp(Vector3(0.0f, 0.0f, 1.0f));
+	MyCamera->SetPerspective(50.0f, 1.0f, 1.0f, 1000.0f);
 
 	// Construct scene lighting - make lighting nodes children of the camera node
 	LightNode* light = ConstructLighting(shader);
@@ -1072,6 +1063,12 @@ int main(int argc, char** argv) {
 
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
+
+    // Turn on blending
+    glEnable(GL_BLEND);
+
+    // Combine what is to be rendered with what's already in the color buffers.
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Enable back face polygon removal
 	glFrontFace(GL_CCW);
